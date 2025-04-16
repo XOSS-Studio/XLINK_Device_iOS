@@ -237,7 +237,6 @@
 			mainGroup = 652BCBAC2D9BCDBB00C1654F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				658CE0F02DAF926100E8C309 /* XCLocalSwiftPackageReference "../XLINKDeviceExample" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 652BCBB62D9BCDBB00C1654F /* Products */;
@@ -612,13 +611,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		658CE0F02DAF926100E8C309 /* XCLocalSwiftPackageReference "../XLINKDeviceExample" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../XLINKDeviceExample;
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		658CE0F12DAF926100E8C309 /* XLINKDevice */ = {

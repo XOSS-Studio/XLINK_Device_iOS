@@ -22,7 +22,7 @@ XLINKDeviceiOSSDK 是一个用于与XLINK自行车码表设备进行通信的iOS
 在Xcode中，选择`File > Add Packages...`，然后输入SDK的仓库URL：
 
 ```
-https://github.com/xlink/XLINKDeviceiOS.git
+https://github.com/XOSS-Studio/XLINK_Device_iOS.git
 ```
 
 #### 2. 本地集成XCFramework
