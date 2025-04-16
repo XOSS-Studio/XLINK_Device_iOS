@@ -1,0 +1,6 @@
+framework module XLINKDevice {
+  umbrella header "XLINKDevice.h"
+  export *
+
+  module * { export * }
+}

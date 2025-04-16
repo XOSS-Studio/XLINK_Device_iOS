@@ -1,0 +1,436 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.1 effective-5.10 (swiftlang-6.1.0.110.21 clang-1700.0.13.3)
+// swift-module-flags: -target arm64-apple-ios14 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name XLINKDevice
+// swift-module-flags-ignorable:  -interface-compiler-version 6.1
+import Combine
+import Compression
+import CoreBluetooth
+import Foundation
+import Security
+import Swift
+import UIKit
+@_exported import XLINKDevice
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+import os
+public enum BatteryStatus : Swift.Int {
+  case Reserved
+  case Full
+  case Good
+  case Middle
+  case Low
+  case Critical
+  case Charging
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum FileTransferState : Swift.Equatable {
+  case preparing
+  case transferring(progress: Swift.Double)
+  case processing
+  case deleting
+  case completed
+  case failed(error: XLINKDevice.XLINKDeviceError)
+  public static func == (lhs: XLINKDevice.FileTransferState, rhs: XLINKDevice.FileTransferState) -> Swift.Bool
+}
+public struct FileTransferProgress : Swift.Equatable {
+  public let state: XLINKDevice.FileTransferState
+  public let progress: Swift.Double
+  public let fileSize: Swift.Int
+  public let transferredBytes: Swift.Int
+  public init(filename: Swift.String, state: XLINKDevice.FileTransferState = .preparing, progress: Swift.Double = 0, fileSize: Swift.Int = 0, transferredBytes: Swift.Int = 0)
+  public static func == (a: XLINKDevice.FileTransferProgress, b: XLINKDevice.FileTransferProgress) -> Swift.Bool
+}
+@_hasMissingDesignatedInitializers public class XLINKDeviceManager {
+  public static let shared: XLINKDevice.XLINKDeviceManager
+  public var isScanning: Swift.Bool {
+    get
+  }
+  public var discoveredDevices: [XLINKDevice.XLINKBaseDevice] {
+    get
+  }
+  public var connectedDevices: [XLINKDevice.XLINKBaseDevice] {
+    get
+  }
+  final public let deviceDiscoveredPublisher: Combine.PassthroughSubject<XLINKDevice.XLINKBaseDevice, Swift.Never>
+  final public let deviceConnectionPublisher: Combine.PassthroughSubject<(XLINKDevice.XLINKBaseDevice, XLINKDevice.XLINKConnectionState), Swift.Never>
+  final public let bluetoothStatePublisher: Combine.PassthroughSubject<CoreBluetooth.CBManagerState, Swift.Never>
+  public var bluetoothState: CoreBluetooth.CBManagerState {
+    get
+  }
+  public var isInitialized: Swift.Bool {
+    get
+  }
+  public var isAuthenticated: Swift.Bool {
+    get
+  }
+  final public let initCompletedPublisher: Combine.PassthroughSubject<Swift.Bool, Swift.Never>
+  final public let authExpirationPublisher: Combine.PassthroughSubject<Foundation.Date?, Swift.Never>
+  public func initialize(apiKey: Swift.String) async throws -> Swift.Bool
+  public func reset()
+  @discardableResult
+  public func startScan(timeout: Foundation.TimeInterval = 10.0) -> Swift.Bool
+  public func stopScan()
+  @discardableResult
+  public func connect(device: XLINKDevice.XLINKBaseDevice) -> Swift.Bool
+  public func disconnect(device: XLINKDevice.XLINKBaseDevice)
+  public func disconnectAll()
+  public func getDevice(byId deviceId: Swift.String) -> XLINKDevice.XLINKBaseDevice?
+  public func getDevices(byName name: Swift.String) -> [XLINKDevice.XLINKBaseDevice]
+  public func getDevices(byType type: XLINKDevice.XLINKBroadcastType) -> [XLINKDevice.XLINKBaseDevice]
+  public func getAuthExpirationDate() -> Foundation.Date?
+  public func getAuthRemainingTime() -> Foundation.TimeInterval
+  @objc deinit
+}
+public struct WorkoutStruct : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct WorkoutStructList : Swift.Codable {
+  public let version: Swift.String
+  public let device_model: Swift.String
+  public let sn: Swift.String
+  public let update_at: Foundation.TimeInterval
+  public let workouts: [[Swift.Int]]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum XLINKBroadcastType {
+  case unknown
+  case bikeComputer
+  case dfuMode
+  public static func == (a: XLINKDevice.XLINKBroadcastType, b: XLINKDevice.XLINKBroadcastType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum XLINKConnectionState {
+  case disconnected
+  case connecting
+  case connected
+  case disconnecting
+  public static func == (a: XLINKDevice.XLINKConnectionState, b: XLINKDevice.XLINKConnectionState) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct XLINKBroadcastInfo : Swift.Identifiable, Swift.Equatable {
+  public let id: Swift.String
+  public let name: Swift.String?
+  public let model: Swift.String?
+  public let firmwareVersion: Swift.String?
+  public let hardwareVersion: Swift.String?
+  public let manufacturer: Swift.String?
+  public let rssi: Swift.Int
+  public let deviceType: XLINKDevice.XLINKBroadcastType
+  public init(id: Swift.String, name: Swift.String?, model: Swift.String?, firmwareVersion: Swift.String?, hardwareVersion: Swift.String?, manufacturer: Swift.String?, rssi: Swift.Int, deviceType: XLINKDevice.XLINKBroadcastType = .unknown)
+  public static func == (lhs: XLINKDevice.XLINKBroadcastInfo, rhs: XLINKDevice.XLINKBroadcastInfo) -> Swift.Bool
+  public typealias ID = Swift.String
+}
+@_hasMissingDesignatedInitializers public class XLINKBaseDevice {
+  public var broadcastInfo: XLINKDevice.XLINKBroadcastInfo {
+    get
+  }
+  public var connectionState: XLINKDevice.XLINKConnectionState {
+    get
+    set
+  }
+  final public let connectionStatePublisher: Combine.PassthroughSubject<XLINKDevice.XLINKConnectionState, Swift.Never>
+  final public let deviceInfoUpdatedPublisher: Combine.PassthroughSubject<XLINKDevice.XLINKBroadcastInfo, Swift.Never>
+  final public let fileTransferPublisher: Combine.PassthroughSubject<(Swift.String, XLINKDevice.FileTransferState), Swift.Never>
+  final public let batteryLevelPublisher: Combine.PassthroughSubject<Swift.UInt8, Swift.Never>
+  final public let batteryStatusPublisher: Combine.PassthroughSubject<XLINKDevice.BatteryStatus, Swift.Never>
+  public var batteryLevel: Swift.UInt8? {
+    get
+  }
+  public var batteryStatus: XLINKDevice.BatteryStatus? {
+    get
+  }
+  public init(deviceInfo: XLINKDevice.XLINKBroadcastInfo)
+  @discardableResult
+  public func connect() -> Swift.Bool
+  public func disconnect()
+  public func requestDeviceState() async throws
+  public func syncTime() async throws
+  public func resetDevice(_ resetMode: XLINKDevice.XLINKResetMode) async throws
+  @objc deinit
+}
+public struct UserGearModel : Swift.Codable {
+  public var gid: Swift.Int
+  public var name: Swift.String
+  public var weight: Swift.Int
+  public var wheel_size: Swift.Int
+  public var type: XLINKDevice.UserGearModel.GearType
+  public var activated: Swift.Bool
+  public struct GearType : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.String)
+    public var rawValue: Swift.String
+    public typealias RawValue = Swift.String
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.UserGearModel : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.UserGearModel, rhs: XLINKDevice.UserGearModel) -> Swift.Bool
+}
+public struct GearSetting : Swift.Codable {
+  public var version: Swift.String?
+  public var device_model: Swift.String?
+  public var sn: Swift.String?
+  public var update_at: Swift.Int?
+  public var user: XLINKDevice.BasicUserModel?
+  public var gears: [XLINKDevice.UserGearModel]?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+prefix operator ++=
+postfix operator ++=
+prefix operator --=
+postfix operator --=
+public enum BikeComputerConnectionState {
+  case offline
+  case connecting
+  case idle
+  case busy
+  case recording
+  case syncing
+  case upgrading
+  case noResponse
+  public static func == (a: XLINKDevice.BikeComputerConnectionState, b: XLINKDevice.BikeComputerConnectionState) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum XLINKResetMode {
+  case restart
+  case factoryReset
+  case formatStorage
+  public static func == (a: XLINKDevice.XLINKResetMode, b: XLINKDevice.XLINKResetMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct BikeComputerConfig {
+  public let totalStorage: Swift.Int
+  public let remainStorage: Swift.Int
+}
+@_hasMissingDesignatedInitializers public class XLINKBikeComputerDevice : XLINKDevice.XLINKBaseDevice {
+  public var bikeComputerState: XLINKDevice.BikeComputerConnectionState {
+    get
+  }
+  public var config: XLINKDevice.BikeComputerConfig? {
+    get
+  }
+  final public let bikeComputerStatePublisher: Combine.PassthroughSubject<XLINKDevice.BikeComputerConnectionState, Swift.Never>
+  final public let configPublisher: Combine.PassthroughSubject<XLINKDevice.BikeComputerConfig, Swift.Never>
+  override public func requestDeviceState() async throws
+  override public func syncTime() async throws
+  override public func resetDevice(_ resetMode: XLINKDevice.XLINKResetMode) async throws
+  public func enterDFUMode() async throws
+  @objc deinit
+}
+extension XLINKDevice.XLINKBikeComputerDevice {
+  public func getUserProfile() async throws -> XLINKDevice.UserProfileSetting?
+  public func sendUserProfile(_ userProfile: XLINKDevice.UserProfileSetting) async throws -> Swift.Bool
+  public func getSettings() async throws -> XLINKDevice.DeviceSetting?
+  public func sendSettings(_ systemSettings: XLINKDevice.DeviceSetting) async throws -> Swift.Bool
+  public func getWorkouts() async throws -> [XLINKDevice.WorkoutStruct]
+  public func syncWorkout(_ fitInfo: XLINKDevice.WorkoutStruct) async throws -> Foundation.Data
+  public func getGearProfile() async throws -> XLINKDevice.GearSetting
+  public func sendGearProfile(_ gearProfile: XLINKDevice.GearSetting) async throws -> Swift.Bool
+  public func getPanels() async throws -> XLINKDevice.PanelSetting
+  public func sendPanels(_ panelSetting: XLINKDevice.PanelSetting) async throws -> Swift.Bool
+}
+extension XLINKDevice.XLINKBikeComputerDevice {
+  public var fileTransferProgressPublisher: Combine.AnyPublisher<XLINKDevice.FileTransferProgress, Swift.Never> {
+    get
+  }
+  public var currentFileTransfer: XLINKDevice.FileTransferProgress? {
+    get
+  }
+  public func cancelFileTransfer() async throws
+}
+public struct PanelPage : Swift.Codable {
+  public var index: Swift.Int
+  public var pid: Swift.Int
+  public var count: Swift.Int
+  public var items: [Swift.Int]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PanelSetting : Swift.Codable {
+  public var version: Swift.String?
+  public var device_model: Swift.String?
+  public var sn: Swift.String?
+  public var update_at: Swift.UInt?
+  public var pages_count: Swift.Int?
+  public var pages: [XLINKDevice.PanelPage]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum ResponseError : Swift.Error {
+  case unknownError
+  case busyError
+  case timeout
+  case notMatch
+  case fileNotExistError
+  case fileDecodeError
+  case storageFulledError
+  case checksumError
+  case recordingError
+  case opCodeNotSupported
+  case invalidParameter
+  case operationFailed
+  case controlNotPermitted
+  public var description: Swift.String {
+    get
+  }
+  public static func == (a: XLINKDevice.ResponseError, b: XLINKDevice.ResponseError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum XLINKDeviceError : Swift.Error, Foundation.LocalizedError {
+  case sdkNotInitialized
+  case authenticationFailed(Swift.String)
+  case tokenInvalid
+  case tokenExpired
+  case tokenMissing
+  case deviceNotFound
+  case connectionFailed
+  case disconnected
+  case timeout
+  case commandFailed
+  case deviceBusy
+  case commandNotSupported
+  case invalidParameter
+  case operationFailed
+  case operationNotPermitted
+  case fileNotFound
+  case fileDecodeFailed
+  case storageFull
+  case dataCorrupted
+  case fileTransferFailed
+  case operationCancelled
+  case transferFailed
+  case checksumError
+  case operationRejected
+  case networkError(any Swift.Error)
+  case unknownError(Swift.String)
+}
+public struct SettingsModel : Swift.Codable {
+  public var language_i18n: XLINKDevice.SettingsModel.Languagei18n
+  public var unit: XLINKDevice.SettingsModel.Unit
+  public var temperature_unit: XLINKDevice.SettingsModel.TemperatureUnit
+  public var time_zone: Swift.Int?
+  public var time_formatter: Swift.Int?
+  public var backlight: XLINKDevice.SettingsModel.Backlight
+  public var auto_pause: XLINKDevice.SettingsModel.AutoPause
+  public var overwrite: Swift.Int?
+  public var keytone: Swift.Bool?
+  public var gps_model: Swift.Int?
+  public var sport_model: Swift.Int?
+  public struct Unit : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.Int)
+    public let rawValue: Swift.Int
+    public typealias RawValue = Swift.Int
+  }
+  public struct TemperatureUnit : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.Int)
+    public let rawValue: Swift.Int
+    public typealias RawValue = Swift.Int
+  }
+  public struct Backlight : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.Int)
+    public let rawValue: Swift.Int
+    public typealias RawValue = Swift.Int
+  }
+  public struct AutoPause : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.Int)
+    public let rawValue: Swift.Int
+    public typealias RawValue = Swift.Int
+  }
+  public struct Languagei18n : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.String)
+    public let rawValue: Swift.String
+    public typealias RawValue = Swift.String
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.SettingsModel : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.SettingsModel, rhs: XLINKDevice.SettingsModel) -> Swift.Bool
+}
+public struct DeviceSetting : Swift.Codable {
+  public var version: Swift.String
+  public var device_model: Swift.String?
+  public var sn: Swift.String?
+  public var updated_at: Swift.Int?
+  public var user: XLINKDevice.BasicUserModel?
+  public var settings: XLINKDevice.SettingsModel?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct BasicUserModel : Swift.Codable {
+  public var uid: Swift.Int
+  public var user_name: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.BasicUserModel : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.BasicUserModel, rhs: XLINKDevice.BasicUserModel) -> Swift.Bool
+}
+public struct UserProfile : Swift.Codable {
+  public var birthday: Swift.UInt32?
+  public var gender: XLINKDevice.UserProfile.Gender?
+  public var weight: Swift.Int?
+  public var height: Swift.Int?
+  public var ALAHR: Swift.Int?
+  public var MAXHR: Swift.Int?
+  public var LTHR: Swift.Int?
+  public var FTP: Swift.Int?
+  public var ALASPEED: Swift.Int?
+  public var time_zone: Swift.Int?
+  public struct Gender : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.Int)
+    public let rawValue: Swift.Int
+    public typealias RawValue = Swift.Int
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.UserProfile : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.UserProfile, rhs: XLINKDevice.UserProfile) -> Swift.Bool
+}
+public struct UserProfileSetting : Swift.Codable {
+  public var version: Swift.String
+  public var device_model: Swift.String
+  public var sn: Swift.String
+  public var update_at: Swift.Int?
+  public var user: XLINKDevice.BasicUserModel?
+  public var user_profile: XLINKDevice.UserProfile
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.BatteryStatus : Swift.Equatable {}
+extension XLINKDevice.BatteryStatus : Swift.Hashable {}
+extension XLINKDevice.BatteryStatus : Swift.RawRepresentable {}
+extension XLINKDevice.XLINKBroadcastType : Swift.Equatable {}
+extension XLINKDevice.XLINKBroadcastType : Swift.Hashable {}
+extension XLINKDevice.XLINKConnectionState : Swift.Equatable {}
+extension XLINKDevice.XLINKConnectionState : Swift.Hashable {}
+extension XLINKDevice.BikeComputerConnectionState : Swift.Equatable {}
+extension XLINKDevice.BikeComputerConnectionState : Swift.Hashable {}
+extension XLINKDevice.XLINKResetMode : Swift.Equatable {}
+extension XLINKDevice.XLINKResetMode : Swift.Hashable {}
+extension XLINKDevice.ResponseError : Swift.Equatable {}
+extension XLINKDevice.ResponseError : Swift.Hashable {}
