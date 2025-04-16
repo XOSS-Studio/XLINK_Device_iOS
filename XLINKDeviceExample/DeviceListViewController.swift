@@ -438,6 +438,8 @@ class DeviceCell: UITableViewCell {
             deviceTypeLabel.text = "DFU模式"
         case .unknown:
             deviceTypeLabel.text = "未知设备类型"
+        @unknown default:
+            deviceTypeLabel.text = "未知设备类型"
         }
 
         // 设置设备型号
@@ -459,6 +461,9 @@ class DeviceCell: UITableViewCell {
             connectionStateLabel.text = "断开中..."
             connectionStateLabel.textColor = .systemOrange
         case .disconnected:
+            connectionStateLabel.text = "未连接"
+            connectionStateLabel.textColor = .systemGray
+        @unknown default:
             connectionStateLabel.text = "未连接"
             connectionStateLabel.textColor = .systemGray
         }

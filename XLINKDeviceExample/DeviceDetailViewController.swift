@@ -69,6 +69,8 @@ class DeviceDetailViewController: UIViewController {
             deviceTypeLabel.text = "DFU模式"
         case .unknown:
             deviceTypeLabel.text = "未知设备类型"
+        @unknown default:
+            deviceTypeLabel.text = "未知设备类型"
         }
 
         view.addSubview(deviceTypeLabel)
@@ -222,6 +224,8 @@ class DeviceDetailViewController: UIViewController {
             return "DFU模式"
         case .unknown:
             return "未知设备类型"
+        @unknown default:
+            return "未知设备类型"
         }
     }
 
@@ -234,6 +238,8 @@ class DeviceDetailViewController: UIViewController {
         case .disconnecting:
             return "断开连接中"
         case .disconnected:
+            return "未连接"
+        @unknown default:
             return "未连接"
         }
     }
@@ -290,6 +296,8 @@ class DeviceDetailViewController: UIViewController {
                     self?.handleFileTransferState(state: .completed)
                 case let .failed(error):
                     self?.handleFileTransferState(state: .failed(error))
+                default:
+                    break
                 }
             }
             .store(in: &cancellables)
@@ -355,6 +363,8 @@ class DeviceDetailViewController: UIViewController {
                 self?.progressLabel.isHidden = true
                 self?.cancelTransferButton.isHidden = true
             }
+        default:
+            break
         }
     }
 
