@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		650A9CD52DB0AF6E00E590C9 /* XLINKDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 650A9CD42DB0AF6E00E590C9 /* XLINKDevice */; };
 		658CE0F22DAF926100E8C309 /* XLINKDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 658CE0F12DAF926100E8C309 /* XLINKDevice */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +84,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				658CE0F22DAF926100E8C309 /* XLINKDevice in Frameworks */,
+				650A9CD52DB0AF6E00E590C9 /* XLINKDevice in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +155,7 @@
 			name = XLINKDeviceExample;
 			packageProductDependencies = (
 				658CE0F12DAF926100E8C309 /* XLINKDevice */,
+				650A9CD42DB0AF6E00E590C9 /* XLINKDevice */,
 			);
 			productName = XLINKDeviceExample;
 			productReference = 652BCBB52D9BCDBB00C1654F /* XLINKDeviceExample.app */;
@@ -237,6 +240,7 @@
 			mainGroup = 652BCBAC2D9BCDBB00C1654F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				650A9CD32DB0AF6E00E590C9 /* XCLocalSwiftPackageReference "../XLINKDeviceExample" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 652BCBB62D9BCDBB00C1654F /* Products */;
@@ -612,7 +616,18 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		650A9CD32DB0AF6E00E590C9 /* XCLocalSwiftPackageReference "../XLINKDeviceExample" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../XLINKDeviceExample;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		650A9CD42DB0AF6E00E590C9 /* XLINKDevice */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XLINKDevice;
+		};
 		658CE0F12DAF926100E8C309 /* XLINKDevice */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = XLINKDevice;
