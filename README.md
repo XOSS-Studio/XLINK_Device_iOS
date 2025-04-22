@@ -1,8 +1,8 @@
-# XLINKDeviceiOSSDK 使用文档
+# XLINKDevice.xcframework 使用文档
 
 ## 简介
 
-XLINKDeviceiOSSDK 是一个用于与XLINK自行车码表设备进行通信的iOS SDK。该SDK提供了一系列API，用于发现、连接和管理XLINK设备，以及与设备进行数据交换和配置管理。
+XLINKDevice.xcframework 是一个用于与XLINK自行车码表设备进行通信的iOS SDK。该SDK提供了一系列API，用于发现、连接和管理XLINK设备，以及与设备进行数据交换和配置管理。
 
 ## 运行条件
 
@@ -11,63 +11,38 @@ XLINKDeviceiOSSDK 是一个用于与XLINK自行车码表设备进行通信的iOS
 * 设备需支持蓝牙4.0或更高版本
 * Xcode 13.0 或更高版本
 
+## 依赖库
+
+本 SDK 依赖 [NordicDFU](https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library)（iOSDFULibrary）。
+
+> ⚠️ 如果未正确集成 NordicDFU，使用 SDK 时会报错：`No such module 'NordicDFU'`。
+
+### 推荐依赖管理方式
+
+#### 方式一：Swift Package Manager（推荐）
+
+1. 在 Xcode 菜单栏选择 `File > Add Packages...`
+2. 输入 NordicDFU 的仓库地址：
+   ```
+   https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library.git
+   ```
+3. 选择合适的版本后添加即可。
+
 ## 集成方法
 
-### Swift Package Manager
+### 通过 Swift Package Manager 集成
 
-有两种方式可以使用Swift Package Manager集成XLINKDevice SDK：
+1. 在Xcode中，选择 File > Swift Packages > Add Package Dependency
+2. 输入SDK的仓库URL
+3. 选择最新版本
+4. ⚠️ 同时请确保你的项目也添加了 NordicDFU 依赖（见上文依赖库说明）。
 
-#### 1. 从GitHub仓库添加
+### 手动集成
 
-在Xcode中，选择`File > Add Packages...`，然后输入SDK的仓库URL：
-
-```
-https://github.com/XOSS-Studio/XLINK_Device_iOS.git
-```
-
-#### 2. 本地集成XCFramework
-
-如果您已下载XLINKDevice.xcframework，可以通过以下步骤进行集成：
-
-1. 将XLINKDevice.xcframework放置在您项目的根目录下
-2. 在项目根目录创建`Package.swift`文件，内容如下：
-
-```swift
-// swift-tools-version:5.5
-import PackageDescription
-
-let package = Package(
-    name: "XLINKDevice",
-    platforms: [
-        .iOS(.v14)
-    ],
-    products: [
-        .library(
-            name: "XLINKDevice",
-            targets: ["XLINKDevice"]
-        ),
-    ],
-    dependencies: [],
-    targets: [
-        .binaryTarget(
-            name: "XLINKDevice",
-            path: "XLINKDevice.xcframework"
-        ),
-    ]
-)
-```
-
-3. 在您的应用项目中，通过本地路径添加包依赖：
-   - 选择`File > Add Packages...`
-   - 点击`Add Local...`按钮
-   - 浏览并选择包含上述Package.swift文件的文件夹
-
-
-#### 3. 手动集成
-
-1. 下载最新的XLINKDeviceiOSSDK.xcframework
-2. 将XLINKDeviceiOSSDK.xcframework拖拽到项目中
-3. 在项目设置中的"General"选项卡下，将XLINKDeviceiOSSDK.xcframework添加到"Frameworks, Libraries, and Embedded Content"中
+1. 下载最新的XLINKDevice.xcframework
+2. 将XLINKDevice.xcframework拖拽到项目中
+3. 在项目设置中的"General"选项卡下，将XLINKDevice.xcframework添加到"Frameworks, Libraries, and Embedded Content"中
+4. ⚠️ 同时请确保你的项目也添加了 NordicDFU 依赖（见上文依赖库说明）。
 
 ## 使用说明
 
@@ -392,7 +367,50 @@ func enterDFUMode() async {
         print("进入DFU模式失败: \(error)")
     }
 }
+
+### 固件升级（DFU）
+
+SDK 支持通过 NordicDFU 实现设备固件升级。请确保已正确集成 NordicDFU 依赖。
+
+#### 示例：设备固件升级
+
+```swift
+import XLINKDevice
+import Combine
+
+// 假设 bikeComputer 是已连接的 XLINKBikeComputerDevice 实例
+let firmwareURL = URL(fileURLWithPath: "固件文件路径")
+
+Task {
+    do {
+        try await bikeComputer.updateFirmware(firmwareURL: firmwareURL)
+        print("固件升级已开始")
+    } catch {
+        print("固件升级失败: \(error)")
+    }
+}
+
+// 监听升级进度
+var cancellables = Set<AnyCancellable>()
+bikeComputer.firmwareUpdateProgressPublisher
+    .sink { progress in
+        print("升级状态: \(progress.state), 进度: \(progress.percentage)%")
+    }
+    .store(in: &cancellables)
+
+// 取消升级
+bikeComputer.cancelFirmwareUpdate()
 ```
+
+#### 参数说明
+- `firmwareURL`: 固件文件的本地或远程URL。
+- `firmwareUpdateProgressPublisher`: Combine 发布者，推送升级状态和进度。
+- `cancelFirmwareUpdate()`: 取消当前固件升级。
+
+#### 进阶用法
+如需完整的UI交互体验，可参考示例工程中的 `DFUProgressViewController`，实现进度展示、状态提示与用户操作。
+
+> ⚠️ 升级过程中请勿断开设备或关闭App，否则可能导致设备异常。
 
 ## 错误处理
 
@@ -426,3 +444,5 @@ SDK可能抛出以下错误类型：
 ## 版本历史
 
 - 0.1.0: 初始版本
+- 0.1.3
+    - 新增：DFU（固件升级）功能示例及文档说明。

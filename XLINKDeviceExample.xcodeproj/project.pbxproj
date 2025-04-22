@@ -7,19 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		650A9CD52DB0AF6E00E590C9 /* XLINKDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 650A9CD42DB0AF6E00E590C9 /* XLINKDevice */; };
-		658CE0F22DAF926100E8C309 /* XLINKDevice in Frameworks */ = {isa = PBXBuildFile; productRef = 658CE0F12DAF926100E8C309 /* XLINKDevice */; };
+		65B6C0E12DB7920200E4F0E5 /* XLINKDevice.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65B6C0E02DB7920200E4F0E5 /* XLINKDevice.xcframework */; };
+		65B6C0E22DB7920200E4F0E5 /* XLINKDevice.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 65B6C0E02DB7920200E4F0E5 /* XLINKDevice.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		65B6C0E52DB7921700E4F0E5 /* NordicDFU in Frameworks */ = {isa = PBXBuildFile; productRef = 65B6C0E42DB7921700E4F0E5 /* NordicDFU */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		652BCBCC2D9BCDBC00C1654F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 652BCBAD2D9BCDBB00C1654F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 652BCBB42D9BCDBB00C1654F;
-			remoteInfo = XLINKDeviceExample;
-		};
-		652BCBD62D9BCDBC00C1654F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 652BCBAD2D9BCDBB00C1654F /* Project object */;
 			proxyType = 1;
@@ -35,6 +29,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				65B6C0E22DB7920200E4F0E5 /* XLINKDevice.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,7 +39,7 @@
 /* Begin PBXFileReference section */
 		652BCBB52D9BCDBB00C1654F /* XLINKDeviceExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XLINKDeviceExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		652BCBCB2D9BCDBC00C1654F /* XLINKDeviceExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLINKDeviceExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		652BCBD52D9BCDBC00C1654F /* XLINKDeviceExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XLINKDeviceExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		65B6C0E02DB7920200E4F0E5 /* XLINKDevice.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = XLINKDevice.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -71,11 +66,6 @@
 			path = XLINKDeviceExampleTests;
 			sourceTree = "<group>";
 		};
-		652BCBD82D9BCDBC00C1654F /* XLINKDeviceExampleUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = XLINKDeviceExampleUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,19 +73,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				658CE0F22DAF926100E8C309 /* XLINKDevice in Frameworks */,
-				650A9CD52DB0AF6E00E590C9 /* XLINKDevice in Frameworks */,
+				65B6C0E12DB7920200E4F0E5 /* XLINKDevice.xcframework in Frameworks */,
+				65B6C0E52DB7921700E4F0E5 /* NordicDFU in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		652BCBC82D9BCDBC00C1654F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		652BCBD22D9BCDBC00C1654F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -110,7 +93,6 @@
 			children = (
 				652BCBB72D9BCDBB00C1654F /* XLINKDeviceExample */,
 				652BCBCE2D9BCDBC00C1654F /* XLINKDeviceExampleTests */,
-				652BCBD82D9BCDBC00C1654F /* XLINKDeviceExampleUITests */,
 				652BCC902D9BD90A00C1654F /* Frameworks */,
 				652BCBB62D9BCDBB00C1654F /* Products */,
 			);
@@ -121,7 +103,6 @@
 			children = (
 				652BCBB52D9BCDBB00C1654F /* XLINKDeviceExample.app */,
 				652BCBCB2D9BCDBC00C1654F /* XLINKDeviceExampleTests.xctest */,
-				652BCBD52D9BCDBC00C1654F /* XLINKDeviceExampleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,6 +110,7 @@
 		652BCC902D9BD90A00C1654F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				65B6C0E02DB7920200E4F0E5 /* XLINKDevice.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -154,8 +136,7 @@
 			);
 			name = XLINKDeviceExample;
 			packageProductDependencies = (
-				658CE0F12DAF926100E8C309 /* XLINKDevice */,
-				650A9CD42DB0AF6E00E590C9 /* XLINKDevice */,
+				65B6C0E42DB7921700E4F0E5 /* NordicDFU */,
 			);
 			productName = XLINKDeviceExample;
 			productReference = 652BCBB52D9BCDBB00C1654F /* XLINKDeviceExample.app */;
@@ -184,29 +165,6 @@
 			productReference = 652BCBCB2D9BCDBC00C1654F /* XLINKDeviceExampleTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		652BCBD42D9BCDBC00C1654F /* XLINKDeviceExampleUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 652BCBE62D9BCDBC00C1654F /* Build configuration list for PBXNativeTarget "XLINKDeviceExampleUITests" */;
-			buildPhases = (
-				652BCBD12D9BCDBC00C1654F /* Sources */,
-				652BCBD22D9BCDBC00C1654F /* Frameworks */,
-				652BCBD32D9BCDBC00C1654F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				652BCBD72D9BCDBC00C1654F /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				652BCBD82D9BCDBC00C1654F /* XLINKDeviceExampleUITests */,
-			);
-			name = XLINKDeviceExampleUITests;
-			packageProductDependencies = (
-			);
-			productName = XLINKDeviceExampleUITests;
-			productReference = 652BCBD52D9BCDBC00C1654F /* XLINKDeviceExampleUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -224,10 +182,6 @@
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 652BCBB42D9BCDBB00C1654F;
 					};
-					652BCBD42D9BCDBC00C1654F = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = 652BCBB42D9BCDBB00C1654F;
-					};
 				};
 			};
 			buildConfigurationList = 652BCBB02D9BCDBB00C1654F /* Build configuration list for PBXProject "XLINKDeviceExample" */;
@@ -240,7 +194,7 @@
 			mainGroup = 652BCBAC2D9BCDBB00C1654F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				650A9CD32DB0AF6E00E590C9 /* XCLocalSwiftPackageReference "../XLINKDeviceExample" */,
+				65B6C0E32DB7921700E4F0E5 /* XCRemoteSwiftPackageReference "IOS-DFU-Library" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 652BCBB62D9BCDBB00C1654F /* Products */;
@@ -249,7 +203,6 @@
 			targets = (
 				652BCBB42D9BCDBB00C1654F /* XLINKDeviceExample */,
 				652BCBCA2D9BCDBC00C1654F /* XLINKDeviceExampleTests */,
-				652BCBD42D9BCDBC00C1654F /* XLINKDeviceExampleUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -263,13 +216,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		652BCBC92D9BCDBC00C1654F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		652BCBD32D9BCDBC00C1654F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -293,13 +239,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		652BCBD12D9BCDBC00C1654F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -307,11 +246,6 @@
 			isa = PBXTargetDependency;
 			target = 652BCBB42D9BCDBB00C1654F /* XLINKDeviceExample */;
 			targetProxy = 652BCBCC2D9BCDBC00C1654F /* PBXContainerItemProxy */;
-		};
-		652BCBD72D9BCDBC00C1654F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 652BCBB42D9BCDBB00C1654F /* XLINKDeviceExample */;
-			targetProxy = 652BCBD62D9BCDBC00C1654F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -543,38 +477,6 @@
 			};
 			name = Release;
 		};
-		652BCBE72D9BCDBC00C1654F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.XLINKDeviceExampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = XLINKDeviceExample;
-			};
-			name = Debug;
-		};
-		652BCBE82D9BCDBC00C1654F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.XLINKDeviceExampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = XLINKDeviceExample;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -605,32 +507,24 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		652BCBE62D9BCDBC00C1654F /* Build configuration list for PBXNativeTarget "XLINKDeviceExampleUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				652BCBE72D9BCDBC00C1654F /* Debug */,
-				652BCBE82D9BCDBC00C1654F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		650A9CD32DB0AF6E00E590C9 /* XCLocalSwiftPackageReference "../XLINKDeviceExample" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../XLINKDeviceExample;
+/* Begin XCRemoteSwiftPackageReference section */
+		65B6C0E32DB7921700E4F0E5 /* XCRemoteSwiftPackageReference "IOS-DFU-Library" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/NordicSemiconductor/IOS-DFU-Library";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.16.0;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		650A9CD42DB0AF6E00E590C9 /* XLINKDevice */ = {
+		65B6C0E42DB7921700E4F0E5 /* NordicDFU */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = XLINKDevice;
-		};
-		658CE0F12DAF926100E8C309 /* XLINKDevice */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = XLINKDevice;
+			package = 65B6C0E32DB7921700E4F0E5 /* XCRemoteSwiftPackageReference "IOS-DFU-Library" */;
+			productName = NordicDFU;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

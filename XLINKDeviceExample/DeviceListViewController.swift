@@ -118,6 +118,7 @@ class DeviceListViewController: UIViewController {
         // 监听设备发现
         deviceManager.deviceDiscoveredPublisher
             .receive(on: DispatchQueue.main)
+            .compactMap { $0 } // 过滤掉nil值
             .sink { [weak self] device in
                 self?.deviceDiscovered(device)
             }
@@ -226,7 +227,7 @@ class DeviceListViewController: UIViewController {
         if let index = devices.firstIndex(where: { $0.broadcastInfo.id == device.broadcastInfo.id }) {
             // 获取旧状态
             let oldState = devices[index].connectionState
-            
+
             // 更新设备
             devices[index] = device
             tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
@@ -294,8 +295,11 @@ extension DeviceListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceCell", for: indexPath) as! DeviceCell
         let device = devices[indexPath.row]
 
-        cell.configure(with: device, rssiImage: getRSSIImage(rssi: device.broadcastInfo.rssi),
-                       rssiDescription: getRSSIDescription(rssi: device.broadcastInfo.rssi))
+        cell.configure(
+            with: device,
+            rssiImage: getRSSIImage(rssi: device.broadcastInfo.rssi),
+            rssiDescription: getRSSIDescription(rssi: device.broadcastInfo.rssi)
+        )
 
         return cell
     }
@@ -454,15 +458,19 @@ class DeviceCell: UITableViewCell {
         case .connected:
             connectionStateLabel.text = "已连接"
             connectionStateLabel.textColor = .systemGreen
+
         case .connecting:
             connectionStateLabel.text = "连接中..."
             connectionStateLabel.textColor = .systemBlue
+
         case .disconnecting:
             connectionStateLabel.text = "断开中..."
             connectionStateLabel.textColor = .systemOrange
+
         case .disconnected:
             connectionStateLabel.text = "未连接"
             connectionStateLabel.textColor = .systemGray
+
         @unknown default:
             connectionStateLabel.text = "未连接"
             connectionStateLabel.textColor = .systemGray

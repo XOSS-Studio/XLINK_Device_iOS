@@ -115,7 +115,7 @@ class DeviceDetailViewController: UIViewController {
 
         // 操作按钮容器
         actionsStackView.translatesAutoresizingMaskIntoConstraints = false
-        actionsStackView.axis = .horizontal
+        actionsStackView.axis = .vertical
         actionsStackView.distribution = .fillEqually
         actionsStackView.spacing = 10
         view.addSubview(actionsStackView)
@@ -124,14 +124,23 @@ class DeviceDetailViewController: UIViewController {
         let sendFileButton = createActionButton(title: "发送文件", action: #selector(sendFile))
         let receiveFileButton = createActionButton(title: "接收文件", action: #selector(receiveFile))
         let resetButton = createActionButton(title: "设备重置", action: #selector(resetDevice))
-        let dfuButton = createActionButton(title: "进入DFU", action: #selector(enterDFU))
-        let receiveFitButton = createActionButton(title: "获取单条fit", action: #selector(receiveFitData))
+        let dfuButton = createActionButton(title: "DFU升级", action: #selector(enterDFU))
+        let receiveFitButton = createActionButton(title: "获取Fit", action: #selector(receiveFitData))
+        let storageInfoButton = createActionButton(title: "设备存储信息", action: #selector(showDeviceStorageInfo))
 
-        actionsStackView.addArrangedSubview(sendFileButton)
-        actionsStackView.addArrangedSubview(receiveFileButton)
-        actionsStackView.addArrangedSubview(resetButton)
-        actionsStackView.addArrangedSubview(dfuButton)
-        actionsStackView.addArrangedSubview(receiveFitButton)
+        // 第一排按钮
+        let firstRowStack = UIStackView(arrangedSubviews: [sendFileButton, receiveFileButton, resetButton])
+        firstRowStack.axis = .horizontal
+        firstRowStack.distribution = .fillEqually
+        firstRowStack.spacing = 10
+        // 第二排按钮
+        let secondRowStack = UIStackView(arrangedSubviews: [dfuButton, receiveFitButton, storageInfoButton])
+        secondRowStack.axis = .horizontal
+        secondRowStack.distribution = .fillEqually
+        secondRowStack.spacing = 10
+        // 添加到主StackView
+        actionsStackView.addArrangedSubview(firstRowStack)
+        actionsStackView.addArrangedSubview(secondRowStack)
 
         // 设置约束
         NSLayoutConstraint.activate([
@@ -150,7 +159,7 @@ class DeviceDetailViewController: UIViewController {
             actionsStackView.topAnchor.constraint(equalTo: deviceInfoTableView.bottomAnchor, constant: 20),
             actionsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             actionsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            actionsStackView.heightAnchor.constraint(equalToConstant: 44),
+            actionsStackView.heightAnchor.constraint(equalToConstant: 104),
 
             progressView.topAnchor.constraint(equalTo: actionsStackView.bottomAnchor, constant: 20),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -270,9 +279,7 @@ class DeviceDetailViewController: UIViewController {
                 self?.updateDeviceInfo()
 
                 if state == .disconnected {
-                    self?.showAlert(title: "设备断开", message: "设备已断开连接") { _ in
-                        self?.navigationController?.popViewController(animated: true)
-                    }
+                    self?.showAlert(title: "设备断开", message: "设备已断开连接") { _ in }
                 }
             }
             .store(in: &cancellables)
@@ -284,20 +291,23 @@ class DeviceDetailViewController: UIViewController {
                 switch fileTransfer.state {
                 case .preparing:
                     self?.handleFileTransferState(state: .started)
+
                 case let .transferring(progress):
                     self?.handleFileTransferState(state: .progress(progress))
+
                 case .processing:
                     // 处理中状态可以显示为100%进度但尚未完成
                     self?.handleFileTransferState(state: .progress(1.0))
                     self?.progressLabel.text = "处理中:"
+
                 case .deleting:
                     self?.progressLabel.text = "删除中: "
+
                 case .completed:
                     self?.handleFileTransferState(state: .completed)
+
                 case let .failed(error):
                     self?.handleFileTransferState(state: .failed(error))
-                default:
-                    break
                 }
             }
             .store(in: &cancellables)
@@ -333,15 +343,19 @@ class DeviceDetailViewController: UIViewController {
         case .preparing:
             progressLabel.text = "准备传输:"
             isTransferring = true
+
         case .transferring:
             progressLabel.text = "传输中:  (\(Int(progress.progress * 100))%)"
             isTransferring = true
+
         case .processing:
             progressLabel.text = "处理中: "
             isTransferring = true
+
         case .deleting:
             progressLabel.text = "删除中: "
             isTransferring = true
+
         case .completed:
             progressLabel.text = "传输完成: "
             progressView.progress = 1.0
@@ -353,6 +367,7 @@ class DeviceDetailViewController: UIViewController {
                 self?.progressLabel.isHidden = true
                 self?.cancelTransferButton.isHidden = true
             }
+
         case let .failed(error):
             progressLabel.text = "传输失败: \(error.localizedDescription)"
             isTransferring = false
@@ -363,8 +378,6 @@ class DeviceDetailViewController: UIViewController {
                 self?.progressLabel.isHidden = true
                 self?.cancelTransferButton.isHidden = true
             }
-        default:
-            break
         }
     }
 
@@ -559,27 +572,23 @@ class DeviceDetailViewController: UIViewController {
     }
 
     @objc private func enterDFU() {
-        let alert = UIAlertController(title: "进入DFU模式", message: "确定要让设备进入DFU固件升级模式吗？", preferredStyle: .alert)
+        guard let firmwareURL = Bundle.main.url(forResource: "N9_V1.09.3069_APP_DFU_250421_175427", withExtension: "zip") else {
+            return
+        }
+        // 跳转到DFU进度页面
+        let dfuVC = DFUProgressViewController(device: device, firmwareURL: firmwareURL)
+        navigationController?.pushViewController(dfuVC, animated: true)
+    }
 
-        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
-        alert.addAction(UIAlertAction(title: "确定", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-
-            Task {
-                do {
-                    try await self.device.enterDFUMode()
-                    await MainActor.run {
-                        self.showAlert(title: "DFU命令已发送", message: "设备正在进入DFU模式")
-                    }
-                } catch {
-                    await MainActor.run {
-                        self.showAlert(title: "DFU命令失败", message: error.localizedDescription)
-                    }
-                }
-            }
-        })
-
-        present(alert, animated: true)
+    @objc private func cancelDownload() {
+        // 获取并取消下载任务
+        if let downloadTask = objc_getAssociatedObject(self, "currentDownloadTask") as? URLSessionDownloadTask {
+            downloadTask.cancel()
+            progressView.isHidden = true
+            progressLabel.isHidden = true
+            cancelTransferButton.isHidden = true
+            showAlert(title: "下载取消", message: "固件下载已取消")
+        }
     }
 
     @objc private func receiveFitData() {
@@ -643,6 +652,24 @@ class DeviceDetailViewController: UIViewController {
         })
 
         present(alert, animated: true)
+    }
+
+    @objc private func showDeviceStorageInfo() {
+        Task {
+            do {
+                let (remain, total) = try await device.requestDeviceStorage()
+                let remainMB = ByteCountFormatter.string(fromByteCount: Int64(remain) * 1024, countStyle: .decimal)
+                let totalMB = ByteCountFormatter.string(fromByteCount: Int64(total) * 1024, countStyle: .decimal)
+                let message = "总容量：\(totalMB)\n剩余容量：\(remainMB)"
+                await MainActor.run {
+                    self.showAlert(title: "设备存储信息", message: message)
+                }
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "获取失败", message: error.localizedDescription)
+                }
+            }
+        }
     }
 
     // MARK: - 工具方法
