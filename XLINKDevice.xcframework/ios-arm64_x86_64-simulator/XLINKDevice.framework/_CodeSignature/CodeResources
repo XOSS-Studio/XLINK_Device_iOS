@@ -14,47 +14,51 @@
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		dFMbmUPSyZbK43NYWbmFlb3A9e4=
+		ax5j8MggjrXf+iyC3vWq8qPzPNI=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		ChJw2tczSVL9LV9Yfk2Wiq3d68s=
+		SNj0NPh6zp66XhG8P61IiYqCXZ0=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		VPZmUvo446YZ7QL81hEVHV5jKQI=
+		gAJRqYZEfVA0+wnKNvzw3DvHHE8=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		ChJw2tczSVL9LV9Yfk2Wiq3d68s=
+		SNj0NPh6zp66XhG8P61IiYqCXZ0=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		NH8O9RydoqRFqtGtKd+faK6GR8I=
+		T7wPo+d4b2SMS5M/zW92dzcH+zw=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		dFMbmUPSyZbK43NYWbmFlb3A9e4=
+		ax5j8MggjrXf+iyC3vWq8qPzPNI=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		1B+LEJk33MqxVAmbXEIuEPA+xuY=
+		CQW+4U9nrBIFG8cR93z0WJ77Uws=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		US9dcS8kPYJ1IVOjSm06e6O1a6E=
+		CmqKtVXZ2ZdjCL/avsy609fIkqE=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		1B+LEJk33MqxVAmbXEIuEPA+xuY=
+		CQW+4U9nrBIFG8cR93z0WJ77Uws=
 		</data>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		5UaHjGsHeYGe2tPBvJAScqxzr8o=
+		2Eg9Ca87ZT8pquh9RprpD5a1PPM=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
 		/A8vOM2U/o9X3shU9xZox69yIsA=
+		</data>
+		<key>PrivacyInfo.xcprivacy</key>
+		<data>
+		iPBMOkzjkklLHQSxS8UpseL0otM=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -70,70 +74,70 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Fga8ZtH4DfIFmRVc5xxBRRfypLI1n3jrnK6JHNReIjk=
+			d3WK8xTLiZ2BUSiEbteb72h8geU4YvKBAEDD7XpnxJ4=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5ndt1MEnu/O1UabP7S8iCEIl2yr7OUnZ3dFDL60fmr8=
+			tBeLgEBOLqB+YA16uDRLon24TBxYBkvIdcdt7B1InUQ=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			R5cOgcItRXsWPtZJedLBTW5pOsOAXt1MzzzqH1LYjwY=
+			vQcoSJuy2/wEiuIcKk2kQq9nJoHFQxIwzI9/5nhGepk=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5ndt1MEnu/O1UabP7S8iCEIl2yr7OUnZ3dFDL60fmr8=
+			tBeLgEBOLqB+YA16uDRLon24TBxYBkvIdcdt7B1InUQ=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZTMTNBC7puiq1otT1T+3VR4AZs0xKINW54d7kVOvk+Y=
+			FLvKvHLQnyA2wSmh9rqm/STckZeH3RmNm15nH33LlDU=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Fga8ZtH4DfIFmRVc5xxBRRfypLI1n3jrnK6JHNReIjk=
+			d3WK8xTLiZ2BUSiEbteb72h8geU4YvKBAEDD7XpnxJ4=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			9fXbLJWdMkO4rF/MGSYvn2aR5C7Oad2+c8DN/Xt//y0=
+			saPnohOpPxmMjp07QRrkGp9R+FQmF898zlyvDtsJafA=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			fsYOQOimJdCrYmqFW5rMtqB81RNGInRNbMheyiF5sxk=
+			cinEBWk23DMyIy050sDrbeERmc+t/7dbkZYbw4JIFJY=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			9fXbLJWdMkO4rF/MGSYvn2aR5C7Oad2+c8DN/Xt//y0=
+			saPnohOpPxmMjp07QRrkGp9R+FQmF898zlyvDtsJafA=
 			</data>
 		</dict>
 		<key>Modules/XLINKDevice.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			jw3rA08LTXl2q5nFf0IzNJSqZP5cBP7fonTsU3+Dc2w=
+			hLK3oUG2mkgvo0ICygwAvOdCvOHbs2XqSb0vWVJZV6c=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -141,6 +145,13 @@
 			<key>hash2</key>
 			<data>
 			/kIyg7to1EFIrbXVsajLoPrIVRynmOG85QSFvVStjDU=
+			</data>
+		</dict>
+		<key>PrivacyInfo.xcprivacy</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			STi9dgvtDgLwdXtE2Tjno9fIKL6pJ8E3XGWwqIdzthk=
 			</data>
 		</dict>
 	</dict>

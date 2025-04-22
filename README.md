@@ -13,20 +13,7 @@ XLINKDevice.xcframework 是一个用于与XLINK自行车码表设备进行通信
 
 ## 依赖库
 
-本 SDK 依赖 [NordicDFU](https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library)（iOSDFULibrary）。
-
-> ⚠️ 如果未正确集成 NordicDFU，使用 SDK 时会报错：`No such module 'NordicDFU'`。
-
-### 推荐依赖管理方式
-
-#### 方式一：Swift Package Manager（推荐）
-
-1. 在 Xcode 菜单栏选择 `File > Add Packages...`
-2. 输入 NordicDFU 的仓库地址：
-   ```
-   https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library.git
-   ```
-3. 选择合适的版本后添加即可。
+本 SDK 已内置 NordicDFU（iOSDFULibrary）源码，无需单独集成或依赖。
 
 ## 集成方法
 
@@ -35,14 +22,12 @@ XLINKDevice.xcframework 是一个用于与XLINK自行车码表设备进行通信
 1. 在Xcode中，选择 File > Swift Packages > Add Package Dependency
 2. 输入SDK的仓库URL
 3. 选择最新版本
-4. ⚠️ 同时请确保你的项目也添加了 NordicDFU 依赖（见上文依赖库说明）。
 
 ### 手动集成
 
 1. 下载最新的XLINKDevice.xcframework
 2. 将XLINKDevice.xcframework拖拽到项目中
 3. 在项目设置中的"General"选项卡下，将XLINKDevice.xcframework添加到"Frameworks, Libraries, and Embedded Content"中
-4. ⚠️ 同时请确保你的项目也添加了 NordicDFU 依赖（见上文依赖库说明）。
 
 ## 使用说明
 
@@ -370,7 +355,7 @@ func enterDFUMode() async {
 
 ### 固件升级（DFU）
 
-SDK 支持通过 NordicDFU 实现设备固件升级。请确保已正确集成 NordicDFU 依赖。
+SDK 已内置 NordicDFU 源码，无需单独集成依赖，可直接调用相关API实现设备固件升级。
 
 #### 示例：设备固件升级
 
@@ -443,6 +428,8 @@ SDK可能抛出以下错误类型：
 
 ## 版本历史
 
+- 0.1.4
+    - 移除外部NordicDFU依赖，SDK已内置NordicDFU源码，用户无需单独集成。
 - 0.1.0: 初始版本
 - 0.1.3
     - 新增：DFU（固件升级）功能示例及文档说明。
