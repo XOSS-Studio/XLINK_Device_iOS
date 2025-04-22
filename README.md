@@ -11,17 +11,7 @@ XLINKDevice.xcframework 是一个用于与XLINK自行车码表设备进行通信
 * 设备需支持蓝牙4.0或更高版本
 * Xcode 13.0 或更高版本
 
-## 依赖库
-
-本 SDK 已内置 NordicDFU（iOSDFULibrary）源码，无需单独集成或依赖。
-
 ## 集成方法
-
-### 通过 Swift Package Manager 集成
-
-1. 在Xcode中，选择 File > Swift Packages > Add Package Dependency
-2. 输入SDK的仓库URL
-3. 选择最新版本
 
 ### 手动集成
 
