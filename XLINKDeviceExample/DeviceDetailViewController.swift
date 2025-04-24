@@ -126,6 +126,7 @@ class DeviceDetailViewController: UIViewController {
         let resetButton = createActionButton(title: "设备重置", action: #selector(resetDevice))
         let dfuButton = createActionButton(title: "DFU升级", action: #selector(enterDFU))
         let receiveFitButton = createActionButton(title: "获取Fit", action: #selector(receiveFitData))
+        let deleteFitButton = createActionButton(title: "删除Fit", action: #selector(deleteFitData))
         let storageInfoButton = createActionButton(title: "设备存储信息", action: #selector(showDeviceStorageInfo))
 
         // 第一排按钮
@@ -134,13 +135,19 @@ class DeviceDetailViewController: UIViewController {
         firstRowStack.distribution = .fillEqually
         firstRowStack.spacing = 10
         // 第二排按钮
-        let secondRowStack = UIStackView(arrangedSubviews: [dfuButton, receiveFitButton, storageInfoButton])
+        let secondRowStack = UIStackView(arrangedSubviews: [dfuButton, receiveFitButton, deleteFitButton])
         secondRowStack.axis = .horizontal
         secondRowStack.distribution = .fillEqually
         secondRowStack.spacing = 10
+        // 第三排按钮
+        let thirdRowStack = UIStackView(arrangedSubviews: [storageInfoButton])
+        thirdRowStack.axis = .horizontal
+        thirdRowStack.distribution = .fillEqually
+        thirdRowStack.spacing = 10
         // 添加到主StackView
         actionsStackView.addArrangedSubview(firstRowStack)
         actionsStackView.addArrangedSubview(secondRowStack)
+        actionsStackView.addArrangedSubview(thirdRowStack)
 
         // 设置约束
         NSLayoutConstraint.activate([
@@ -159,7 +166,7 @@ class DeviceDetailViewController: UIViewController {
             actionsStackView.topAnchor.constraint(equalTo: deviceInfoTableView.bottomAnchor, constant: 20),
             actionsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             actionsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            actionsStackView.heightAnchor.constraint(equalToConstant: 104),
+            actionsStackView.heightAnchor.constraint(equalToConstant: 152),
 
             progressView.topAnchor.constraint(equalTo: actionsStackView.bottomAnchor, constant: 20),
             progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -271,6 +278,8 @@ class DeviceDetailViewController: UIViewController {
                 self?.updateDeviceInfo()
             }
             .store(in: &cancellables)
+
+ 
 
         // 监听连接状态变化
         device.connectionStatePublisher
@@ -620,6 +629,50 @@ class DeviceDetailViewController: UIViewController {
                 } catch {
                     await MainActor.run {
                         self.showAlert(title: "获取失败", message: error.localizedDescription)
+                    }
+                }
+            }
+        })
+
+        present(alert, animated: true)
+    }
+    
+    @objc private func deleteFitData() {
+        let alert = UIAlertController(
+            title: "删除FIT文件",
+            message: "确定要删除设备上的最后一条FIT数据吗？此操作不可恢复！",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alert.addAction(UIAlertAction(title: "确定", style: .destructive) { [weak self] _ in
+            Task {
+                guard let self = self else { return }
+
+                do {
+                    // 获取workout列表
+                    let workouts = try await self.device.getWorkouts()
+                    if workouts.isEmpty {
+                        await MainActor.run {
+                            self.showAlert(title: "删除失败", message: "没有FIT数据可供删除")
+                        }
+                        return
+                    }
+                    
+                    // 获取最后一个workout并删除
+                    let lastWorkout = workouts.last!
+                    let result = try await self.device.deleteWorkout(lastWorkout)
+                    
+                    await MainActor.run {
+                        if result {
+                            self.showAlert(title: "删除成功", message: "已成功删除文件：\(lastWorkout.formatName)")
+                        } else {
+                            self.showAlert(title: "删除失败", message: "设备返回删除失败")
+                        }
+                    }
+                } catch {
+                    await MainActor.run {
+                        self.showAlert(title: "删除失败", message: error.localizedDescription)
                     }
                 }
             }
