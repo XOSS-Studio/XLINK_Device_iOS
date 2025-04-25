@@ -208,37 +208,13 @@ class DeviceListViewController: UIViewController {
     // MARK: - 设备处理
 
     private func deviceDiscovered(_ device: XLINKBaseDevice) {
-        // 检查设备是否已存在
-        if !devices.contains(where: { $0.broadcastInfo.id == device.broadcastInfo.id }) {
-            devices.append(device)
-            devices.sort { $0.broadcastInfo.rssi > $1.broadcastInfo.rssi } // 按信号强度排序
-            tableView.reloadData()
-        } else {
-            // 如果设备已存在，更新RSSI和其他可能变化的信息
-            if let index = devices.firstIndex(where: { $0.broadcastInfo.id == device.broadcastInfo.id }) {
-                devices[index] = device
-                tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
-            }
-        }
+        devices.removeAll()
+        devices.append(contentsOf: XLINKDeviceManager.shared.discoveredDevices)
+        tableView.reloadData()
     }
 
-    private func deviceConnectionChanged(_ device: XLINKBaseDevice, state: XLINKConnectionState) {
-        // 查找设备并更新其状态
-        if let index = devices.firstIndex(where: { $0.broadcastInfo.id == device.broadcastInfo.id }) {
-            // 获取旧状态
-            let oldState = devices[index].connectionState
-
-            // 更新设备
-            devices[index] = device
-            tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-
-            // 只有在状态从非connected变为connected时才跳转到详情页
-            // 防止多次收到connected状态导致重复跳转
-            if state == .connected && oldState != .connected {
-                let deviceDetailVC = DeviceDetailViewController(device: device)
-                navigationController?.pushViewController(deviceDetailVC, animated: true)
-            }
-        }
+    private func deviceConnectionChanged(_ device: XLINKBaseDevice, state: XLINKDeviceState) {
+        tableView.reloadData()
     }
 
     // MARK: - 工具方法
@@ -310,7 +286,7 @@ extension DeviceListViewController: UITableViewDelegate, UITableViewDataSource {
         let device = devices[indexPath.row]
 
         // 检查设备是否已连接
-        if device.connectionState == .connected {
+        if device.deviceState.isConnected {
             let deviceDetailVC = DeviceDetailViewController(device: device)
             navigationController?.pushViewController(deviceDetailVC, animated: true)
         } else {
@@ -454,10 +430,10 @@ class DeviceCell: UITableViewCell {
         rssiLabel.text = rssiDescription
 
         // 设置连接状态
-        switch device.connectionState {
-        case .connected:
-            connectionStateLabel.text = "已连接"
-            connectionStateLabel.textColor = .systemGreen
+        switch device.deviceState {
+        case .offline:
+            connectionStateLabel.text = "未连接"
+            connectionStateLabel.textColor = .systemGray
 
         case .connecting:
             connectionStateLabel.text = "连接中..."
@@ -467,11 +443,31 @@ class DeviceCell: UITableViewCell {
             connectionStateLabel.text = "断开中..."
             connectionStateLabel.textColor = .systemOrange
 
-        case .disconnected:
-            connectionStateLabel.text = "未连接"
-            connectionStateLabel.textColor = .systemGray
+        case .discoveringServices:
+            connectionStateLabel.text = "发现服务中..."
+            connectionStateLabel.textColor = .systemBlue
 
-        @unknown default:
+        case .idle:
+            connectionStateLabel.text = "已连接"
+            connectionStateLabel.textColor = .systemGreen
+
+        case .busy:
+            connectionStateLabel.text = "忙碌中..."
+            connectionStateLabel.textColor = .systemOrange
+
+        case .recording:
+            connectionStateLabel.text = "记录中..."
+            connectionStateLabel.textColor = .systemOrange
+
+        case .syncing:
+            connectionStateLabel.text = "同步中..."
+            connectionStateLabel.textColor = .systemOrange
+
+        case .upgrading:
+            connectionStateLabel.text = "升级中..."
+            connectionStateLabel.textColor = .systemOrange
+
+        case .noResponse:
             connectionStateLabel.text = "未连接"
             connectionStateLabel.textColor = .systemGray
         }

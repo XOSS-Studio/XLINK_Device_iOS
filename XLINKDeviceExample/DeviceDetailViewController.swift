@@ -218,6 +218,7 @@ class DeviceDetailViewController: UIViewController {
         // 构建设备信息列表
         deviceInfoItems = [
             ("设备ID", device.broadcastInfo.id),
+            ("连接状态", getConnectionStateString(device.deviceState)),
             ("设备名称", device.broadcastInfo.name ?? "未知"),
             ("设备类型", getDeviceTypeString(device.broadcastInfo.deviceType)),
             ("设备型号", device.broadcastInfo.model ?? "未知"),
@@ -225,7 +226,6 @@ class DeviceDetailViewController: UIViewController {
             ("硬件版本", device.broadcastInfo.hardwareVersion ?? "未知"),
             ("厂商", device.broadcastInfo.manufacturer ?? "未知"),
             ("信号强度", "\(device.broadcastInfo.rssi) dBm"),
-            ("连接状态", getConnectionStateString(device.connectionState)),
             ("电池电量", device.batteryLevel != nil ? "\(device.batteryLevel!)%" : "未知"),
         ]
 
@@ -245,17 +245,37 @@ class DeviceDetailViewController: UIViewController {
         }
     }
 
-    private func getConnectionStateString(_ state: XLINKConnectionState) -> String {
+    private func getConnectionStateString(_ state: XLINKDeviceState) -> String {
+        // 设置连接状态
         switch state {
-        case .connected:
-            return "已连接"
-        case .connecting:
-            return "连接中"
-        case .disconnecting:
-            return "断开连接中"
-        case .disconnected:
+        case .offline:
             return "未连接"
-        @unknown default:
+
+        case .connecting:
+            return "连接中..."
+
+        case .disconnecting:
+            return "断开中..."
+
+        case .discoveringServices:
+            return "发现服务中..."
+
+        case .idle:
+            return "已连接"
+
+        case .busy:
+            return "忙碌中..."
+
+        case .recording:
+            return "记录中..."
+
+        case .syncing:
+            return "同步中..."
+
+        case .upgrading:
+            return "升级中..."
+
+        case .noResponse:
             return "未连接"
         }
     }
@@ -279,15 +299,13 @@ class DeviceDetailViewController: UIViewController {
             }
             .store(in: &cancellables)
 
- 
-
         // 监听连接状态变化
-        device.connectionStatePublisher
+        device.deviceStatePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateDeviceInfo()
 
-                if state == .disconnected {
+                if state.isDisconnect {
                     self?.showAlert(title: "设备断开", message: "设备已断开连接") { _ in }
                 }
             }
@@ -465,8 +483,8 @@ class DeviceDetailViewController: UIViewController {
                 }
                 _ = try await device.sendUserProfile(profile)
                 // 注意：实际传输状态和进度会通过fileTransferPublisher返回
-            } catch {
-                debugPrint("文件发送失败: \(error)")
+            } catch let error as XLINKDeviceError {
+                debugPrint("文件发送失败: \(error.localizedDescription)")
                 await MainActor.run {
                     self.handleFileTransferState(state: .failed(error))
                 }
@@ -503,7 +521,8 @@ class DeviceDetailViewController: UIViewController {
                     let jsonData = try JSONEncoder().encode(data)
                     let jsonString = String(data: jsonData, encoding: .utf8) ?? "无法解析为字符串"
                     showResultAlert(title: successTitle, message: "\(jsonString)")
-                } catch {
+                } catch let error as XLINKDeviceError {
+                    debugPrint("文件接收失败: \(error.localizedDescription)")
                     await MainActor.run {
                         self.handleFileTransferState(state: .failed(error))
                     }
@@ -636,7 +655,7 @@ class DeviceDetailViewController: UIViewController {
 
         present(alert, animated: true)
     }
-    
+
     @objc private func deleteFitData() {
         let alert = UIAlertController(
             title: "删除FIT文件",
@@ -658,11 +677,11 @@ class DeviceDetailViewController: UIViewController {
                         }
                         return
                     }
-                    
+
                     // 获取最后一个workout并删除
                     let lastWorkout = workouts.last!
                     let result = try await self.device.deleteWorkout(lastWorkout)
-                    
+
                     await MainActor.run {
                         if result {
                             self.showAlert(title: "删除成功", message: "已成功删除文件：\(lastWorkout.formatName)")
