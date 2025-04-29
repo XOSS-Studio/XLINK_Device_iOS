@@ -621,8 +621,8 @@ class DeviceDetailViewController: UIViewController {
 
     @objc private func receiveFitData() {
         let alert = UIAlertController(
-            title: "获取单条FIT数据",
-            message: "确定要获取当前设备的单条FIT数据吗？",
+            title: "获取FIT数据",
+            message: "确定要获取当前设备的FIT数据吗？",
             preferredStyle: .alert
         )
 
@@ -639,11 +639,12 @@ class DeviceDetailViewController: UIViewController {
                         }
                         return
                     }
-                    // 等待500ms以确保数据准备好
-                    try await Task.sleep(nanoseconds: 500_000_000)
-                    let fitData = try await self.device.syncWorkout(workouts.last!)
-                    await MainActor.run {
-                        self.showAlert(title: "获取成功", message: "FIT数据：\(fitData)")
+                    for item in workouts {
+                        let fitData = try await self.device.syncWorkout(item)
+                        await MainActor.run {
+                            self.showAlert(title: "获取成功", message: "FIT数据：\(fitData)")
+                        }
+                        try await Task.sleep(nanoseconds: 500_000_000)
                     }
                 } catch {
                     await MainActor.run {
