@@ -600,7 +600,7 @@ class DeviceDetailViewController: UIViewController {
     }
 
     @objc private func enterDFU() {
-        guard let firmwareURL = Bundle.main.url(forResource: "N9_V1.09.3069_APP_DFU_250421_175427", withExtension: "zip") else {
+        guard let firmwareURL = Bundle.main.url(forResource: "N9_V1.09.3075_APP_DFU_250506_153501", withExtension: "zip") else {
             return
         }
         // 跳转到DFU进度页面
