@@ -571,22 +571,17 @@ class DeviceDetailViewController: UIViewController {
 
         // 重置选项
         for (title, type) in [
-            ("重启", XLINKResetMode.restart),
-            ("恢复出厂设置", XLINKResetMode.factoryReset),
-            ("格式化存储", XLINKResetMode.formatStorage),
+            ("清除总里程", XLINKResetMode.ResetODO),
+            ("恢复出厂设置", XLINKResetMode.RestoreFactory),
+            ("清除绑定信息", XLINKResetMode.Unbind),
+            ("格式化设备", XLINKResetMode.FormatDevice),
         ] {
             alert.addAction(UIAlertAction(title: title, style: .destructive) { [weak self] _ in
                 Task {
                     guard let self = self else { return }
-
                     do {
                         try await self.device.resetDevice(type)
-                        await MainActor.run {
-                            self.showAlert(
-                                title: "重置命令已发送",
-                                message: "设备正在\(type == .restart ? "重启" : type == .factoryReset ? "恢复出厂设置" : "格式化存储")"
-                            )
-                        }
+
                     } catch {
                         await MainActor.run {
                             self.showAlert(title: "重置失败", message: error.localizedDescription)
