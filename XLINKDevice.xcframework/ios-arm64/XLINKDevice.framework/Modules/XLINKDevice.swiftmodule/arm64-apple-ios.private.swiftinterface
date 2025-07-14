@@ -16,402 +16,6 @@ import _StringProcessing
 import _SwiftConcurrencyShims
 import os
 import zlib
-public enum CompressionMethod : Swift.UInt16 {
-  case none
-  case deflate
-  public init?(rawValue: Swift.UInt16)
-  public typealias RawValue = Swift.UInt16
-  public var rawValue: Swift.UInt16 {
-    get
-  }
-}
-public typealias CRC32 = Swift.UInt32
-public typealias Consumer = (_ data: Foundation.Data) throws -> Swift.Void
-public typealias Provider = (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data
-extension Foundation.Data {
-  public func crc32(checksum: XLINKDevice.CRC32) -> XLINKDevice.CRC32
-  public static func compress(size: Swift.Int64, bufferSize: Swift.Int, provider: (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
-  public static func decompress(size: Swift.Int64, bufferSize: Swift.Int, skipCRC32: Swift.Bool, provider: (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
-}
-public struct Entry : Swift.Equatable {
-  public enum EntryType : Swift.Int {
-    case file
-    case directory
-    case symlink
-    public init?(rawValue: Swift.Int)
-    public typealias RawValue = Swift.Int
-    public var rawValue: Swift.Int {
-      get
-    }
-  }
-  public func path(using encoding: Swift.String.Encoding) -> Swift.String
-  public var path: Swift.String {
-    get
-  }
-  public var fileAttributes: [Foundation.FileAttributeKey : Any] {
-    get
-  }
-  public var checksum: XLINKDevice.CRC32 {
-    get
-  }
-  public var type: XLINKDevice.Entry.EntryType {
-    get
-  }
-  public var isCompressed: Swift.Bool {
-    get
-  }
-  public var compressedSize: Swift.UInt64 {
-    get
-  }
-  public var uncompressedSize: Swift.UInt64 {
-    get
-  }
-  public static func == (lhs: XLINKDevice.Entry, rhs: XLINKDevice.Entry) -> Swift.Bool
-}
-@objc public enum DFUUuidType : Swift.Int {
-  case legacyService = 0
-  case legacyControlPoint = 1
-  case legacyPacket = 2
-  case legacyVersion = 3
-  case secureService = 4
-  case secureControl = 5
-  case securePacket = 6
-  case buttonlessService = 7
-  case buttonlessCharacteristic = 8
-  case buttonlessWithoutBondSharing = 9
-  case buttonlessWithBondSharing = 10
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
-    get
-  }
-}
-@objc public class DFUUuid : ObjectiveC.NSObject {
-  @objc final public let uuid: CoreBluetooth.CBUUID
-  @objc final public let type: XLINKDevice.DFUUuidType
-  @objc public init(withUUID: CoreBluetooth.CBUUID, forType: XLINKDevice.DFUUuidType)
-  @objc deinit
-}
-@_inheritsConvenienceInitializers @objc public class DFUUuidHelper : ObjectiveC.NSObject {
-  @objc public var legacyDFUService: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var legacyDFUControlPoint: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var legacyDFUPacket: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var legacyDFUVersion: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var secureDFUService: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var secureDFUControlPoint: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var secureDFUPacket: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var buttonlessExperimentalService: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var buttonlessExperimentalCharacteristic: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var buttonlessWithoutBonds: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc public var buttonlessWithBonds: CoreBluetooth.CBUUID {
-    get
-  }
-  @objc override dynamic public init()
-  @objc convenience public init(customUuids uuids: [XLINKDevice.DFUUuid])
-  @objc deinit
-}
-extension XLINKDevice.Archive {
-  @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
-  final public func extract(_ entry: XLINKDevice.Entry, to url: Foundation.URL, bufferSize: Swift.UInt32, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil) throws -> XLINKDevice.CRC32
-  @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
-  final public func extract(_ entry: XLINKDevice.Entry, bufferSize: Swift.UInt32, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
-}
-public struct FirmwareCheckModel : Swift.Codable {
-  public let model: Swift.String?
-  public let need_update: Swift.Bool
-  public let latest_firmware_version: Swift.String?
-  public let latest_firmware_url: Swift.String?
-  public let latest_firmware_description: Swift.String?
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public enum XLINKDeviceError : Swift.Error, Foundation.LocalizedError {
-  case sdkNotInitialized
-  case authenticationFailed(Swift.String)
-  case tokenInvalid
-  case tokenExpired
-  case tokenMissing
-  case deviceNotFound
-  case connectionFailed
-  case disconnected
-  case timeout
-  case commandFailed
-  case deviceBusy
-  case commandNotSupported
-  case invalidParameter
-  case operationFailed
-  case operationNotPermitted
-  case fileNotFound
-  case fileDecodeFailed
-  case storageFull
-  case dataCorrupted
-  case fileTransferFailed
-  case operationCancelled
-  case checksumError
-  case operationRejected
-  case networkError(any Swift.Error)
-  case unknownError(Swift.String)
-}
-public struct PanelPage : Swift.Codable {
-  public var index: Swift.Int
-  public var pid: Swift.Int
-  public var count: Swift.Int
-  public var items: [Swift.Int]
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public struct PanelSetting : Swift.Codable {
-  public var version: Swift.String?
-  public var device_model: Swift.String?
-  public var sn: Swift.String?
-  public var update_at: Swift.UInt?
-  public var pages_count: Swift.Int?
-  public var pages: [XLINKDevice.PanelPage]
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-extension Foundation.Data {
-  @available(*, deprecated, message: "Please use `Int64` for `size` and provider `position`.")
-  public static func compress(size: Swift.Int, bufferSize: Swift.Int, provider: (_ position: Swift.Int, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
-  @available(*, deprecated, message: "Please use `Int64` for `size` and provider `position`.")
-  public static func decompress(size: Swift.Int, bufferSize: Swift.Int, skipCRC32: Swift.Bool, provider: (_ position: Swift.Int, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
-}
-public struct UserGearModel : Swift.Codable {
-  public var gid: Swift.Int
-  public var name: Swift.String
-  public var weight: Swift.Int
-  public var wheel_size: Swift.Int
-  public var type: XLINKDevice.UserGearModel.GearType
-  public var activated: Swift.Bool
-  public struct GearType : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
-    public init(rawValue: Swift.String)
-    public var rawValue: Swift.String
-    public static let Bike: XLINKDevice.UserGearModel.GearType
-    public typealias RawValue = Swift.String
-  }
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-extension XLINKDevice.UserGearModel : Swift.Equatable {
-  public static func == (lhs: XLINKDevice.UserGearModel, rhs: XLINKDevice.UserGearModel) -> Swift.Bool
-}
-public struct GearSetting : Swift.Codable {
-  public var version: Swift.String?
-  public var device_model: Swift.String?
-  public var sn: Swift.String?
-  public var update_at: Swift.Int?
-  public var user: XLINKDevice.BasicUserModel?
-  public var gears: [XLINKDevice.UserGearModel]?
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-public protocol XLINKFirmwareUpdatable {
-  func updateFirmware(firmwareURL: Foundation.URL) async throws
-  func cancelFirmwareUpdate()
-  var firmwareUpdateProgressPublisher: Combine.AnyPublisher<XLINKDevice.XLINKFirmwareUpdateProgress, Swift.Never> { get }
-}
-@objc public class DFUServiceInitiator : ObjectiveC.NSObject {
-  @objc weak public var delegate: (any XLINKDevice.DFUServiceDelegate)?
-  @objc weak public var progressDelegate: (any XLINKDevice.DFUProgressDelegate)?
-  @objc weak public var logger: (any XLINKDevice.LoggerDelegate)?
-  @objc public var peripheralSelector: any XLINKDevice.DFUPeripheralSelectorDelegate
-  @objc public var packetReceiptNotificationParameter: Swift.UInt16
-  @objc public var forceDfu: Swift.Bool
-  @objc public var forceScanningForNewAddressInLegacyDfu: Swift.Bool
-  @objc public var connectionTimeout: Swift.Double
-  @objc public var dataObjectPreparationDelay: Swift.Double
-  @objc public var alternativeAdvertisingNameEnabled: Swift.Bool
-  @objc public var alternativeAdvertisingName: Swift.String?
-  @objc public var enableUnsafeExperimentalButtonlessServiceInSecureDfu: Swift.Bool
-  @objc public var uuidHelper: XLINKDevice.DFUUuidHelper
-  @objc public var disableResume: Swift.Bool
-  @available(*, deprecated, message: "Use init(queue: DispatchQueue?) instead.")
-  @objc public init(centralManager: CoreBluetooth.CBCentralManager, target: CoreBluetooth.CBPeripheral)
-  @objc public init(queue: Dispatch.DispatchQueue? = nil, delegateQueue: Dispatch.DispatchQueue = DispatchQueue.main, progressQueue: Dispatch.DispatchQueue = DispatchQueue.main, loggerQueue: Dispatch.DispatchQueue = DispatchQueue.main, centralManagerOptions: [Swift.String : Any]? = nil)
-  @objc public func with(firmware file: XLINKDevice.DFUFirmware) -> XLINKDevice.DFUServiceInitiator
-  @available(*, deprecated, message: "Use start(target: CBPeripheral) instead.")
-  @objc public func start() -> XLINKDevice.DFUServiceController?
-  @objc public func start(target: CoreBluetooth.CBPeripheral) -> XLINKDevice.DFUServiceController?
-  @objc public func start(targetWithIdentifier uuid: Foundation.UUID) -> XLINKDevice.DFUServiceController?
-  @objc deinit
-}
-public enum BikeComputerConnectionState {
-  case offline
-  case connecting
-  case discoveringServices
-  case idle
-  case busy
-  case recording
-  case syncing
-  case upgrading
-  case noResponse
-  public static func == (a: XLINKDevice.BikeComputerConnectionState, b: XLINKDevice.BikeComputerConnectionState) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public enum XLINKResetMode {
-  case ResetODO
-  case RestoreFactory
-  case Unbind
-  case FormatDevice
-  public static func == (a: XLINKDevice.XLINKResetMode, b: XLINKDevice.XLINKResetMode) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public struct BikeComputerConfig {
-  public let totalStorage: Swift.Int
-  public let remainStorage: Swift.Int
-}
-@_hasMissingDesignatedInitializers public class XLINKBikeComputerDevice : XLINKDevice.XLINKBaseDevice {
-  public var config: XLINKDevice.BikeComputerConfig? {
-    get
-  }
-  final public let bikeComputerStatePublisher: Combine.PassthroughSubject<XLINKDevice.BikeComputerConnectionState, Swift.Never>
-  final public let configPublisher: Combine.PassthroughSubject<XLINKDevice.BikeComputerConfig, Swift.Never>
-  override public func requestDeviceState() async throws
-  override public func requestDeviceStorage() async throws -> (remainStorage: Swift.Int, totalStorage: Swift.Int)
-  override public func syncTime() async throws
-  override public func resetDevice(_ resetMode: XLINKDevice.XLINKResetMode) async throws
-  public func enterDFUMode() async throws
-  @objc deinit
-}
-extension XLINKDevice.XLINKBikeComputerDevice {
-  public func getUserProfile() async throws -> XLINKDevice.UserProfileSetting?
-  public func sendUserProfile(_ userProfile: XLINKDevice.UserProfileSetting) async throws -> Swift.Bool
-  public func getSettings() async throws -> XLINKDevice.DeviceSetting?
-  public func sendSettings(_ systemSettings: XLINKDevice.DeviceSetting) async throws -> Swift.Bool
-  public func getWorkouts() async throws -> [XLINKDevice.WorkoutStruct]
-  public func syncWorkout(_ fitInfo: XLINKDevice.WorkoutStruct) async throws -> Foundation.Data
-  public func deleteWorkout(_ fitInfo: XLINKDevice.WorkoutStruct) async throws -> Swift.Bool
-  public func getGearProfile() async throws -> XLINKDevice.GearSetting
-  public func sendGearProfile(_ gearProfile: XLINKDevice.GearSetting) async throws -> Swift.Bool
-  public func getPanels() async throws -> XLINKDevice.PanelSetting
-  public func sendPanels(_ panelSetting: XLINKDevice.PanelSetting) async throws -> Swift.Bool
-}
-extension XLINKDevice.XLINKBikeComputerDevice {
-  public var fileTransferProgressPublisher: Combine.AnyPublisher<XLINKDevice.FileTransferProgress, Swift.Never> {
-    get
-  }
-  public var currentFileTransfer: XLINKDevice.FileTransferProgress? {
-    get
-  }
-  public func cancelFileTransfer() async throws
-}
-@_hasMissingDesignatedInitializers public class XLINKDeviceManager {
-  public static let shared: XLINKDevice.XLINKDeviceManager
-  public var isScanning: Swift.Bool {
-    get
-  }
-  public var discoveredDevices: [XLINKDevice.XLINKBaseDevice] {
-    get
-  }
-  public var connectedDevices: [XLINKDevice.XLINKBaseDevice] {
-    get
-  }
-  final public let deviceDiscoveredPublisher: Combine.PassthroughSubject<XLINKDevice.XLINKBaseDevice, Swift.Never>
-  final public let deviceConnectionPublisher: Combine.PassthroughSubject<(XLINKDevice.XLINKBaseDevice, XLINKDevice.XLINKDeviceState), Swift.Never>
-  final public let bluetoothStatePublisher: Combine.PassthroughSubject<CoreBluetooth.CBManagerState, Swift.Never>
-  public var bluetoothState: CoreBluetooth.CBManagerState {
-    get
-  }
-  public var isInitialized: Swift.Bool {
-    get
-  }
-  public var isAuthenticated: Swift.Bool {
-    get
-  }
-  final public let initCompletedPublisher: Combine.PassthroughSubject<Swift.Bool, Swift.Never>
-  final public let authExpirationPublisher: Combine.PassthroughSubject<Foundation.Date?, Swift.Never>
-  public func initialize(apiKey: Swift.String) async throws -> Swift.Bool
-  public func reset()
-  @discardableResult
-  public func startScan(timeout: Foundation.TimeInterval = 10.0) -> Swift.Bool
-  public func stopScan()
-  @discardableResult
-  public func connect(device: XLINKDevice.XLINKBaseDevice) -> Swift.Bool
-  public func disconnect(device: XLINKDevice.XLINKBaseDevice)
-  public func disconnectAll()
-  public func getDevice(byId deviceId: Swift.String) -> XLINKDevice.XLINKBaseDevice?
-  public func getDevices(byName name: Swift.String) -> [XLINKDevice.XLINKBaseDevice]
-  public func getDevices(byType type: XLINKDevice.XLINKBroadcastType) -> [XLINKDevice.XLINKBaseDevice]
-  public func removeSensor(_ deviceId: Swift.String)
-  public func getAuthExpirationDate() -> Foundation.Date?
-  public func getAuthRemainingTime() -> Foundation.TimeInterval
-  @objc deinit
-}
-public struct BasicUserModel : Swift.Codable {
-  public var uid: Swift.Int
-  public var user_name: Swift.String
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-extension XLINKDevice.BasicUserModel : Swift.Equatable {
-  public static func == (lhs: XLINKDevice.BasicUserModel, rhs: XLINKDevice.BasicUserModel) -> Swift.Bool
-}
-public struct UserProfile : Swift.Codable {
-  public var birthday: Swift.UInt32?
-  public var gender: XLINKDevice.UserProfile.Gender?
-  public var weight: Swift.Int?
-  public var height: Swift.Int?
-  public var ALAHR: Swift.Int?
-  public var MAXHR: Swift.Int?
-  public var LTHR: Swift.Int?
-  public var FTP: Swift.Int?
-  public var ALASPEED: Swift.Int?
-  public var time_zone: Swift.Int?
-  public struct Gender : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
-    public init(rawValue: Swift.Int)
-    public let rawValue: Swift.Int
-    public static let female: XLINKDevice.UserProfile.Gender
-    public static let male: XLINKDevice.UserProfile.Gender
-    public typealias RawValue = Swift.Int
-  }
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-extension XLINKDevice.UserProfile : Swift.Equatable {
-  public static func == (lhs: XLINKDevice.UserProfile, rhs: XLINKDevice.UserProfile) -> Swift.Bool
-}
-public struct UserProfileSetting : Swift.Codable {
-  public var version: Swift.String
-  public var device_model: Swift.String
-  public var sn: Swift.String
-  public var update_at: Swift.Int?
-  public var user: XLINKDevice.BasicUserModel?
-  public var user_profile: XLINKDevice.UserProfile
-  public func encode(to encoder: any Swift.Encoder) throws
-  public init(from decoder: any Swift.Decoder) throws
-}
-extension XLINKDevice.Archive {
-  final public func addEntry(with path: Swift.String, relativeTo baseURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil) throws
-  final public func addEntry(with path: Swift.String, fileURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil) throws
-  final public func addEntry(with path: Swift.String, type: XLINKDevice.Entry.EntryType, uncompressedSize: Swift.Int64, modificationDate: Foundation.Date = Date(), permissions: Swift.UInt16? = nil, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil, provider: (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data) throws
-  final public func remove(_ entry: XLINKDevice.Entry, bufferSize: Swift.Int = defaultReadChunkSize, progress: Foundation.Progress? = nil) throws
-}
 @objc public enum DFUError : Swift.Int {
   case remoteLegacyDFUSuccess = 1
   case remoteLegacyDFUInvalidState = 2
@@ -500,17 +104,28 @@ extension XLINKDevice.DFUState : Swift.CustomStringConvertible {
   @objc func dfuStateDidChange(to state: XLINKDevice.DFUState)
   @objc func dfuError(_ error: XLINKDevice.DFUError, didOccurWithMessage message: Swift.String)
 }
-@_hasMissingDesignatedInitializers @objc open class DFUFirmwareSize : ObjectiveC.NSObject {
-  @objc open var softdevice: Swift.UInt32 {
+public enum ResponseError : Swift.Error {
+  case unknownError
+  case busyError
+  case timeout
+  case notMatch
+  case fileNotExistError
+  case fileDecodeError
+  case storageFulledError
+  case checksumError
+  case recordingError
+  case opCodeNotSupported
+  case invalidParameter
+  case operationFailed
+  case controlNotPermitted
+  public var description: Swift.String {
     get
   }
-  @objc open var bootloader: Swift.UInt32 {
+  public static func == (a: XLINKDevice.ResponseError, b: XLINKDevice.ResponseError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
     get
   }
-  @objc open var application: Swift.UInt32 {
-    get
-  }
-  @objc deinit
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class DFUServiceController : ObjectiveC.NSObject {
   @objc public func pause()
@@ -523,6 +138,412 @@ extension XLINKDevice.DFUState : Swift.CustomStringConvertible {
   @objc public var aborted: Swift.Bool {
     @objc get
   }
+  @objc deinit
+}
+extension Foundation.FileManager {
+  @available(*, deprecated, renamed: "unzipItem(at:to:skipCRC32:progress:pathEncoding:)")
+  public func unzipItem(at sourceURL: Foundation.URL, to destinationURL: Foundation.URL, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil, preferredEncoding: Swift.String.Encoding?) throws
+}
+@_inheritsConvenienceInitializers @objc public class LegacyDFUServiceInitiator : XLINKDevice.DFUServiceInitiator {
+  @objc override public func start(targetWithIdentifier uuid: Foundation.UUID) -> XLINKDevice.DFUServiceController?
+  @available(*, deprecated, message: "Use init(queue: DispatchQueue?) instead.")
+  @objc override public init(centralManager: CoreBluetooth.CBCentralManager, target: CoreBluetooth.CBPeripheral)
+  @objc override public init(queue: Dispatch.DispatchQueue? = nil, delegateQueue: Dispatch.DispatchQueue = super, progressQueue: Dispatch.DispatchQueue = super, loggerQueue: Dispatch.DispatchQueue = super, centralManagerOptions: [Swift.String : Any]? = nil)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class XLINKDeviceManager {
+  public static let shared: XLINKDevice.XLINKDeviceManager
+  public var isScanning: Swift.Bool {
+    get
+  }
+  public var discoveredDevices: [XLINKDevice.XLINKBaseDevice] {
+    get
+  }
+  public var connectedDevices: [XLINKDevice.XLINKBaseDevice] {
+    get
+  }
+  final public let deviceDiscoveredPublisher: Combine.PassthroughSubject<XLINKDevice.XLINKBaseDevice, Swift.Never>
+  final public let deviceConnectionPublisher: Combine.PassthroughSubject<(XLINKDevice.XLINKBaseDevice, XLINKDevice.XLINKDeviceState), Swift.Never>
+  final public let bluetoothStatePublisher: Combine.PassthroughSubject<CoreBluetooth.CBManagerState, Swift.Never>
+  public var bluetoothState: CoreBluetooth.CBManagerState {
+    get
+  }
+  public var isInitialized: Swift.Bool {
+    get
+  }
+  public var isAuthenticated: Swift.Bool {
+    get
+  }
+  final public let initCompletedPublisher: Combine.PassthroughSubject<Swift.Bool, Swift.Never>
+  final public let authExpirationPublisher: Combine.PassthroughSubject<Foundation.Date?, Swift.Never>
+  public func initialize(apiKey: Swift.String) async throws -> Swift.Bool
+  public func reset()
+  @discardableResult
+  public func startScan(timeout: Foundation.TimeInterval = 10.0) -> Swift.Bool
+  public func stopScan()
+  @discardableResult
+  public func connect(device: XLINKDevice.XLINKBaseDevice) -> Swift.Bool
+  public func disconnect(device: XLINKDevice.XLINKBaseDevice)
+  public func disconnectAll()
+  public func getDevice(byId deviceId: Swift.String) -> XLINKDevice.XLINKBaseDevice?
+  public func getDevices(byName name: Swift.String) -> [XLINKDevice.XLINKBaseDevice]
+  public func getDevices(byType type: XLINKDevice.XLINKBroadcastType) -> [XLINKDevice.XLINKBaseDevice]
+  public func removeSensor(_ deviceId: Swift.String)
+  public func getAuthExpirationDate() -> Foundation.Date?
+  public func getAuthRemainingTime() -> Foundation.TimeInterval
+  @objc deinit
+}
+public enum XLINKDeviceError : Swift.Error, Foundation.LocalizedError {
+  case sdkNotInitialized
+  case authenticationFailed(Swift.String)
+  case tokenInvalid
+  case tokenExpired
+  case tokenMissing
+  case deviceNotFound
+  case connectionFailed
+  case disconnected
+  case timeout
+  case commandFailed
+  case deviceBusy
+  case commandNotSupported
+  case invalidParameter
+  case operationFailed
+  case operationNotPermitted
+  case fileNotFound
+  case fileDecodeFailed
+  case storageFull
+  case dataCorrupted
+  case fileTransferFailed
+  case operationCancelled
+  case checksumError
+  case operationRejected
+  case networkError(any Swift.Error)
+  case unknownError(Swift.String)
+}
+@objc public class DFUServiceInitiator : ObjectiveC.NSObject {
+  @objc weak public var delegate: (any XLINKDevice.DFUServiceDelegate)?
+  @objc weak public var progressDelegate: (any XLINKDevice.DFUProgressDelegate)?
+  @objc weak public var logger: (any XLINKDevice.LoggerDelegate)?
+  @objc public var peripheralSelector: any XLINKDevice.DFUPeripheralSelectorDelegate
+  @objc public var packetReceiptNotificationParameter: Swift.UInt16
+  @objc public var forceDfu: Swift.Bool
+  @objc public var forceScanningForNewAddressInLegacyDfu: Swift.Bool
+  @objc public var connectionTimeout: Swift.Double
+  @objc public var dataObjectPreparationDelay: Swift.Double
+  @objc public var alternativeAdvertisingNameEnabled: Swift.Bool
+  @objc public var alternativeAdvertisingName: Swift.String?
+  @objc public var enableUnsafeExperimentalButtonlessServiceInSecureDfu: Swift.Bool
+  @objc public var uuidHelper: XLINKDevice.DFUUuidHelper
+  @objc public var disableResume: Swift.Bool
+  @available(*, deprecated, message: "Use init(queue: DispatchQueue?) instead.")
+  @objc public init(centralManager: CoreBluetooth.CBCentralManager, target: CoreBluetooth.CBPeripheral)
+  @objc public init(queue: Dispatch.DispatchQueue? = nil, delegateQueue: Dispatch.DispatchQueue = DispatchQueue.main, progressQueue: Dispatch.DispatchQueue = DispatchQueue.main, loggerQueue: Dispatch.DispatchQueue = DispatchQueue.main, centralManagerOptions: [Swift.String : Any]? = nil)
+  @objc public func with(firmware file: XLINKDevice.DFUFirmware) -> XLINKDevice.DFUServiceInitiator
+  @available(*, deprecated, message: "Use start(target: CBPeripheral) instead.")
+  @objc public func start() -> XLINKDevice.DFUServiceController?
+  @objc public func start(target: CoreBluetooth.CBPeripheral) -> XLINKDevice.DFUServiceController?
+  @objc public func start(targetWithIdentifier uuid: Foundation.UUID) -> XLINKDevice.DFUServiceController?
+  @objc deinit
+}
+public struct Entry : Swift.Equatable {
+  public enum EntryType : Swift.Int {
+    case file
+    case directory
+    case symlink
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  public func path(using encoding: Swift.String.Encoding) -> Swift.String
+  public var path: Swift.String {
+    get
+  }
+  public var fileAttributes: [Foundation.FileAttributeKey : Any] {
+    get
+  }
+  public var checksum: XLINKDevice.CRC32 {
+    get
+  }
+  public var type: XLINKDevice.Entry.EntryType {
+    get
+  }
+  public var isCompressed: Swift.Bool {
+    get
+  }
+  public var compressedSize: Swift.UInt64 {
+    get
+  }
+  public var uncompressedSize: Swift.UInt64 {
+    get
+  }
+  public static func == (lhs: XLINKDevice.Entry, rhs: XLINKDevice.Entry) -> Swift.Bool
+}
+public struct FirmwareCheckModel : Swift.Codable {
+  public let model: Swift.String?
+  public let need_update: Swift.Bool
+  public let latest_firmware_version: Swift.String?
+  public let latest_firmware_url: Swift.String?
+  public let latest_firmware_description: Swift.String?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+@objc @_inheritsConvenienceInitializers public class IntelHex2BinConverter : ObjectiveC.NSObject {
+  public static func convert(_ hex: Foundation.Data, mbrSize: Swift.UInt32 = 0) -> Foundation.Data?
+  @objc override dynamic public init()
+  @objc deinit
+}
+public enum CompressionMethod : Swift.UInt16 {
+  case none
+  case deflate
+  public init?(rawValue: Swift.UInt16)
+  public typealias RawValue = Swift.UInt16
+  public var rawValue: Swift.UInt16 {
+    get
+  }
+}
+public typealias CRC32 = Swift.UInt32
+public typealias Consumer = (_ data: Foundation.Data) throws -> Swift.Void
+public typealias Provider = (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data
+extension Foundation.Data {
+  public func crc32(checksum: XLINKDevice.CRC32) -> XLINKDevice.CRC32
+  public static func compress(size: Swift.Int64, bufferSize: Swift.Int, provider: (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+  public static func decompress(size: Swift.Int64, bufferSize: Swift.Int, skipCRC32: Swift.Bool, provider: (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+}
+prefix operator ++=
+postfix operator ++=
+prefix operator --=
+postfix operator --=
+public struct PanelPage : Swift.Codable {
+  public var index: Swift.Int
+  public var pid: Swift.Int
+  public var count: Swift.Int
+  public var items: [Swift.Int]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PanelSetting : Swift.Codable {
+  public var version: Swift.String?
+  public var device_model: Swift.String?
+  public var sn: Swift.String?
+  public var update_at: Swift.UInt?
+  public var pages_count: Swift.Int?
+  public var pages: [XLINKDevice.PanelPage]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public protocol DataConvertible {
+  static func + (lhs: Foundation.Data, rhs: Self) -> Foundation.Data
+  static func += (lhs: inout Foundation.Data, rhs: Self)
+}
+extension XLINKDevice.DataConvertible {
+  public static func + (lhs: Foundation.Data, rhs: Self) -> Foundation.Data
+  public static func += (lhs: inout Foundation.Data, rhs: Self)
+}
+extension Swift.UInt8 : XLINKDevice.DataConvertible {
+}
+extension Swift.UInt16 : XLINKDevice.DataConvertible {
+}
+extension Swift.UInt32 : XLINKDevice.DataConvertible {
+}
+extension Swift.Int : XLINKDevice.DataConvertible {
+}
+extension Swift.Float : XLINKDevice.DataConvertible {
+}
+extension Swift.Double : XLINKDevice.DataConvertible {
+}
+extension Swift.String : XLINKDevice.DataConvertible {
+  public static func + (lhs: Foundation.Data, rhs: Swift.String) -> Foundation.Data
+}
+extension Foundation.Data : XLINKDevice.DataConvertible {
+  public static func + (lhs: Foundation.Data, rhs: Foundation.Data) -> Foundation.Data
+}
+public struct UserGearModel : Swift.Codable {
+  public var gid: Swift.Int
+  public var name: Swift.String
+  public var weight: Swift.Int
+  public var wheel_size: Swift.Int
+  public var type: XLINKDevice.UserGearModel.GearType
+  public var activated: Swift.Bool
+  public struct GearType : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.String)
+    public var rawValue: Swift.String
+    public static let Bike: XLINKDevice.UserGearModel.GearType
+    public typealias RawValue = Swift.String
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.UserGearModel : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.UserGearModel, rhs: XLINKDevice.UserGearModel) -> Swift.Bool
+}
+public struct GearSetting : Swift.Codable {
+  public var version: Swift.String?
+  public var device_model: Swift.String?
+  public var sn: Swift.String?
+  public var update_at: Swift.Int?
+  public var user: XLINKDevice.BasicUserModel?
+  public var gears: [XLINKDevice.UserGearModel]?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension Foundation.Data {
+  @available(*, deprecated, message: "Please use `Int64` for `size` and provider `position`.")
+  public static func compress(size: Swift.Int, bufferSize: Swift.Int, provider: (_ position: Swift.Int, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+  @available(*, deprecated, message: "Please use `Int64` for `size` and provider `position`.")
+  public static func decompress(size: Swift.Int, bufferSize: Swift.Int, skipCRC32: Swift.Bool, provider: (_ position: Swift.Int, _ size: Swift.Int) throws -> Foundation.Data, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+}
+public protocol XLINKFirmwareUpdatable {
+  func updateFirmware(firmwareURL: Foundation.URL) async throws
+  func cancelFirmwareUpdate()
+  var firmwareUpdateProgressPublisher: Combine.AnyPublisher<XLINKDevice.XLINKFirmwareUpdateProgress, Swift.Never> { get }
+}
+public enum BikeComputerConnectionState {
+  case offline
+  case connecting
+  case discoveringServices
+  case idle
+  case busy
+  case recording
+  case syncing
+  case upgrading
+  case noResponse
+  public static func == (a: XLINKDevice.BikeComputerConnectionState, b: XLINKDevice.BikeComputerConnectionState) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum XLINKResetMode {
+  case ResetODO
+  case RestoreFactory
+  case Unbind
+  case FormatDevice
+  public static func == (a: XLINKDevice.XLINKResetMode, b: XLINKDevice.XLINKResetMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct BikeComputerConfig {
+  public let totalStorage: Swift.Int
+  public let remainStorage: Swift.Int
+}
+@_hasMissingDesignatedInitializers public class XLINKBikeComputerDevice : XLINKDevice.XLINKBaseDevice {
+  public var config: XLINKDevice.BikeComputerConfig? {
+    get
+  }
+  final public let bikeComputerStatePublisher: Combine.PassthroughSubject<XLINKDevice.BikeComputerConnectionState, Swift.Never>
+  final public let configPublisher: Combine.PassthroughSubject<XLINKDevice.BikeComputerConfig, Swift.Never>
+  override public func requestDeviceState() async throws
+  override public func requestDeviceStorage() async throws -> (remainStorage: Swift.Int, totalStorage: Swift.Int)
+  override public func syncTime() async throws
+  override public func resetDevice(_ resetMode: XLINKDevice.XLINKResetMode) async throws
+  public func enterDFUMode() async throws
+  @objc deinit
+}
+extension XLINKDevice.XLINKBikeComputerDevice {
+  public func getUserProfile() async throws -> XLINKDevice.UserProfileSetting?
+  public func sendUserProfile(_ userProfile: XLINKDevice.UserProfileSetting) async throws -> Swift.Bool
+  public func getSettings() async throws -> XLINKDevice.DeviceSetting?
+  public func sendSettings(_ systemSettings: XLINKDevice.DeviceSetting) async throws -> Swift.Bool
+  public func getWorkouts() async throws -> [XLINKDevice.WorkoutStruct]
+  public func syncWorkout(_ fitInfo: XLINKDevice.WorkoutStruct) async throws -> Foundation.Data
+  public func deleteWorkout(_ fitInfo: XLINKDevice.WorkoutStruct) async throws -> Swift.Bool
+  public func getGearProfile() async throws -> XLINKDevice.GearSetting
+  public func sendGearProfile(_ gearProfile: XLINKDevice.GearSetting) async throws -> Swift.Bool
+  public func getPanels() async throws -> XLINKDevice.PanelSetting
+  public func sendPanels(_ panelSetting: XLINKDevice.PanelSetting) async throws -> Swift.Bool
+}
+extension XLINKDevice.XLINKBikeComputerDevice {
+  public var fileTransferProgressPublisher: Combine.AnyPublisher<XLINKDevice.FileTransferProgress, Swift.Never> {
+    get
+  }
+  public var currentFileTransfer: XLINKDevice.FileTransferProgress? {
+    get
+  }
+  public func cancelFileTransfer() async throws
+}
+public struct BasicUserModel : Swift.Codable {
+  public var uid: Swift.Int
+  public var user_name: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.BasicUserModel : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.BasicUserModel, rhs: XLINKDevice.BasicUserModel) -> Swift.Bool
+}
+public struct UserProfile : Swift.Codable {
+  public var birthday: Swift.UInt32?
+  public var gender: XLINKDevice.UserProfile.Gender?
+  public var weight: Swift.Int?
+  public var height: Swift.Int?
+  public var ALAHR: Swift.Int?
+  public var MAXHR: Swift.Int?
+  public var LTHR: Swift.Int?
+  public var FTP: Swift.Int?
+  public var ALASPEED: Swift.Int?
+  public var time_zone: Swift.Int?
+  public struct Gender : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public init(rawValue: Swift.Int)
+    public let rawValue: Swift.Int
+    public static let female: XLINKDevice.UserProfile.Gender
+    public static let male: XLINKDevice.UserProfile.Gender
+    public typealias RawValue = Swift.Int
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension XLINKDevice.UserProfile : Swift.Equatable {
+  public static func == (lhs: XLINKDevice.UserProfile, rhs: XLINKDevice.UserProfile) -> Swift.Bool
+}
+public struct UserProfileSetting : Swift.Codable {
+  public var version: Swift.String
+  public var device_model: Swift.String
+  public var sn: Swift.String
+  public var update_at: Swift.Int?
+  public var user: XLINKDevice.BasicUserModel?
+  public var user_profile: XLINKDevice.UserProfile
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+@objc public enum LogLevel : Swift.Int {
+  case debug = 0
+  case verbose = 1
+  case info = 5
+  case application = 10
+  case warning = 15
+  case error = 20
+  public func name() -> Swift.String
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public protocol LoggerDelegate {
+  @objc func logWith(_ level: XLINKDevice.LogLevel, message: Swift.String)
+}
+public enum BatteryStatus : Swift.Int {
+  case Reserved
+  case Full
+  case Good
+  case Middle
+  case Low
+  case Critical
+  case Charging
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objc public class SecureDFUServiceInitiator : XLINKDevice.DFUServiceInitiator {
+  @objc override public func start(targetWithIdentifier uuid: Foundation.UUID) -> XLINKDevice.DFUServiceController?
+  @available(*, deprecated, message: "Use init(queue: DispatchQueue?) instead.")
+  @objc override public init(centralManager: CoreBluetooth.CBCentralManager, target: CoreBluetooth.CBPeripheral)
+  @objc override public init(queue: Dispatch.DispatchQueue? = nil, delegateQueue: Dispatch.DispatchQueue = super, progressQueue: Dispatch.DispatchQueue = super, loggerQueue: Dispatch.DispatchQueue = super, centralManagerOptions: [Swift.String : Any]? = nil)
   @objc deinit
 }
 public enum XLINKBroadcastType {
@@ -573,12 +594,6 @@ public struct XLINKBroadcastInfo {
   public let rssi: Swift.Int
   public let deviceType: XLINKDevice.XLINKBroadcastType
 }
-@_inheritsConvenienceInitializers @objc open class DFUPeripheralSelector : ObjectiveC.NSObject, XLINKDevice.DFUPeripheralSelectorDelegate {
-  @objc open func select(_ peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Swift.AnyObject], RSSI: Foundation.NSNumber, hint name: Swift.String? = nil) -> Swift.Bool
-  @objc open func filterBy(hint dfuServiceUUID: CoreBluetooth.CBUUID) -> [CoreBluetooth.CBUUID]?
-  @objc override dynamic public init()
-  @objc deinit
-}
 public enum FileSyncState : Swift.Int, Swift.Codable {
   case unSync
   case recording
@@ -611,28 +626,21 @@ public struct WorkoutStructList : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-@objc public protocol DFUPeripheralSelectorDelegate {
-  @objc func select(_ peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Swift.AnyObject], RSSI: Foundation.NSNumber, hint name: Swift.String?) -> Swift.Bool
-  @objc func filterBy(hint dfuServiceUUID: CoreBluetooth.CBUUID) -> [CoreBluetooth.CBUUID]?
-}
-public enum ResponseError : Swift.Error {
-  case unknownError
-  case busyError
-  case timeout
-  case notMatch
-  case fileNotExistError
-  case fileDecodeError
-  case storageFulledError
-  case checksumError
-  case recordingError
-  case opCodeNotSupported
-  case invalidParameter
-  case operationFailed
-  case controlNotPermitted
-  public var description: Swift.String {
+@_hasMissingDesignatedInitializers @objc open class DFUFirmwareSize : ObjectiveC.NSObject {
+  @objc open var softdevice: Swift.UInt32 {
     get
   }
-  public static func == (a: XLINKDevice.ResponseError, b: XLINKDevice.ResponseError) -> Swift.Bool
+  @objc open var bootloader: Swift.UInt32 {
+    get
+  }
+  @objc open var application: Swift.UInt32 {
+    get
+  }
+  @objc deinit
+}
+public enum DFUStreamHexError : Swift.Error {
+  case invalidHexFile
+  public static func == (a: XLINKDevice.DFUStreamHexError, b: XLINKDevice.DFUStreamHexError) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
@@ -648,63 +656,6 @@ extension Foundation.Data {
     public var hashValue: Swift.Int {
       get
     }
-  }
-}
-extension XLINKDevice.Archive {
-  @available(*, deprecated, message: "Please use the throwing initializer.")
-  convenience public init?(url: Foundation.URL, accessMode mode: XLINKDevice.Archive.AccessMode, preferredEncoding: Swift.String.Encoding? = nil)
-  @available(*, deprecated, message: "Please use the throwing initializer.")
-  convenience public init?(data: Foundation.Data = Data(), accessMode mode: XLINKDevice.Archive.AccessMode, preferredEncoding: Swift.String.Encoding? = nil)
-}
-public enum FileTransferState : Swift.Equatable {
-  case preparing
-  case transferring(progress: Swift.Double)
-  case processing
-  case deleting
-  case completed
-  case failed(error: XLINKDevice.XLINKDeviceError)
-  public static func == (lhs: XLINKDevice.FileTransferState, rhs: XLINKDevice.FileTransferState) -> Swift.Bool
-}
-public struct FileTransferProgress : Swift.Equatable {
-  public let state: XLINKDevice.FileTransferState
-  public let progress: Swift.Double
-  public let fileSize: Swift.Int
-  public let transferredBytes: Swift.Int
-  public init(filename: Swift.String, state: XLINKDevice.FileTransferState = .preparing, progress: Swift.Double = 0, fileSize: Swift.Int = 0, transferredBytes: Swift.Int = 0)
-  public static func == (a: XLINKDevice.FileTransferProgress, b: XLINKDevice.FileTransferProgress) -> Swift.Bool
-}
-public enum BatteryStatus : Swift.Int {
-  case Reserved
-  case Full
-  case Good
-  case Middle
-  case Low
-  case Critical
-  case Charging
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
-    get
-  }
-}
-extension XLINKDevice.Archive {
-  final public var data: Foundation.Data? {
-    get
-  }
-}
-@_inheritsConvenienceInitializers @objc public class LegacyDFUServiceInitiator : XLINKDevice.DFUServiceInitiator {
-  @objc override public func start(targetWithIdentifier uuid: Foundation.UUID) -> XLINKDevice.DFUServiceController?
-  @available(*, deprecated, message: "Use init(queue: DispatchQueue?) instead.")
-  @objc override public init(centralManager: CoreBluetooth.CBCentralManager, target: CoreBluetooth.CBPeripheral)
-  @objc override public init(queue: Dispatch.DispatchQueue? = nil, delegateQueue: Dispatch.DispatchQueue = super, progressQueue: Dispatch.DispatchQueue = super, loggerQueue: Dispatch.DispatchQueue = super, centralManagerOptions: [Swift.String : Any]? = nil)
-  @objc deinit
-}
-public enum DFUStreamHexError : Swift.Error {
-  case invalidHexFile
-  public static func == (a: XLINKDevice.DFUStreamHexError, b: XLINKDevice.DFUStreamHexError) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
   }
 }
 public enum DFUStreamZipError : Swift.Error {
@@ -723,6 +674,31 @@ extension XLINKDevice.DFUStreamZipError : Foundation.LocalizedError {
     get
   }
 }
+extension XLINKDevice.Archive {
+  final public func extract(_ entry: XLINKDevice.Entry, to url: Foundation.URL, bufferSize: Swift.Int = defaultReadChunkSize, skipCRC32: Swift.Bool = false, allowUncontainedSymlinks: Swift.Bool = false, progress: Foundation.Progress? = nil) throws -> XLINKDevice.CRC32
+  final public func extract(_ entry: XLINKDevice.Entry, bufferSize: Swift.Int = defaultReadChunkSize, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+}
+@objc public protocol DFUPeripheralSelectorDelegate {
+  @objc func select(_ peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Swift.AnyObject], RSSI: Foundation.NSNumber, hint name: Swift.String?) -> Swift.Bool
+  @objc func filterBy(hint dfuServiceUUID: CoreBluetooth.CBUUID) -> [CoreBluetooth.CBUUID]?
+}
+extension XLINKDevice.Archive {
+  final public func addEntry(with path: Swift.String, relativeTo baseURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil) throws
+  final public func addEntry(with path: Swift.String, fileURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil) throws
+  final public func addEntry(with path: Swift.String, type: XLINKDevice.Entry.EntryType, uncompressedSize: Swift.Int64, modificationDate: Foundation.Date = Date(), permissions: Swift.UInt16? = nil, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil, provider: (_ position: Swift.Int64, _ size: Swift.Int) throws -> Foundation.Data) throws
+  final public func remove(_ entry: XLINKDevice.Entry, bufferSize: Swift.Int = defaultReadChunkSize, progress: Foundation.Progress? = nil) throws
+}
+extension XLINKDevice.Archive {
+  final public func totalUnitCountForRemoving(_ entry: XLINKDevice.Entry) -> Swift.Int64
+  final public func totalUnitCountForReading(_ entry: XLINKDevice.Entry) -> Swift.Int64
+  final public func totalUnitCountForAddingItem(at url: Foundation.URL) -> Swift.Int64
+}
+@_inheritsConvenienceInitializers @objc open class DFUPeripheralSelector : ObjectiveC.NSObject, XLINKDevice.DFUPeripheralSelectorDelegate {
+  @objc open func select(_ peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Swift.AnyObject], RSSI: Foundation.NSNumber, hint name: Swift.String? = nil) -> Swift.Bool
+  @objc open func filterBy(hint dfuServiceUUID: CoreBluetooth.CBUUID) -> [CoreBluetooth.CBUUID]?
+  @objc override dynamic public init()
+  @objc deinit
+}
 public enum XLINKFirmwareUpdateState {
   case initial
   case preparingDFU
@@ -740,13 +716,31 @@ public struct XLINKFirmwareUpdateProgress {
 }
 extension XLINKDevice.Archive {
   @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
-  final public func addEntry(with path: Swift.String, relativeTo baseURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.UInt32, progress: Foundation.Progress? = nil) throws
+  final public func extract(_ entry: XLINKDevice.Entry, to url: Foundation.URL, bufferSize: Swift.UInt32, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil) throws -> XLINKDevice.CRC32
   @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
-  final public func addEntry(with path: Swift.String, fileURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.UInt32, progress: Foundation.Progress? = nil) throws
-  @available(*, deprecated, message: "Please use `Int64` for `uncompressedSize` and provider `position`. `Int` for `bufferSize`.")
-  final public func addEntry(with path: Swift.String, type: XLINKDevice.Entry.EntryType, uncompressedSize: Swift.UInt32, modificationDate: Foundation.Date = Date(), permissions: Swift.UInt16? = nil, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil, provider: (_ position: Swift.Int, _ size: Swift.Int) throws -> Foundation.Data) throws
-  @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
-  final public func remove(_ entry: XLINKDevice.Entry, bufferSize: Swift.UInt32, progress: Foundation.Progress? = nil) throws
+  final public func extract(_ entry: XLINKDevice.Entry, bufferSize: Swift.UInt32, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+}
+public enum FileTransferState : Swift.Equatable {
+  case preparing
+  case transferring(progress: Swift.Double)
+  case processing
+  case deleting
+  case completed
+  case failed(error: XLINKDevice.XLINKDeviceError)
+  public static func == (lhs: XLINKDevice.FileTransferState, rhs: XLINKDevice.FileTransferState) -> Swift.Bool
+}
+public struct FileTransferProgress : Swift.Equatable {
+  public let state: XLINKDevice.FileTransferState
+  public let progress: Swift.Double
+  public let fileSize: Swift.Int
+  public let transferredBytes: Swift.Int
+  public init(filename: Swift.String, state: XLINKDevice.FileTransferState = .preparing, progress: Swift.Double = 0, fileSize: Swift.Int = 0, transferredBytes: Swift.Int = 0)
+  public static func == (a: XLINKDevice.FileTransferProgress, b: XLINKDevice.FileTransferProgress) -> Swift.Bool
+}
+extension XLINKDevice.Archive {
+  final public var data: Foundation.Data? {
+    get
+  }
 }
 public struct SettingsModel : Swift.Codable {
   public var language_i18n: XLINKDevice.SettingsModel.Languagei18n
@@ -814,51 +808,6 @@ public struct DeviceSetting : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public protocol DataConvertible {
-  static func + (lhs: Foundation.Data, rhs: Self) -> Foundation.Data
-  static func += (lhs: inout Foundation.Data, rhs: Self)
-}
-extension XLINKDevice.DataConvertible {
-  public static func + (lhs: Foundation.Data, rhs: Self) -> Foundation.Data
-  public static func += (lhs: inout Foundation.Data, rhs: Self)
-}
-extension Swift.UInt8 : XLINKDevice.DataConvertible {
-}
-extension Swift.UInt16 : XLINKDevice.DataConvertible {
-}
-extension Swift.UInt32 : XLINKDevice.DataConvertible {
-}
-extension Swift.Int : XLINKDevice.DataConvertible {
-}
-extension Swift.Float : XLINKDevice.DataConvertible {
-}
-extension Swift.Double : XLINKDevice.DataConvertible {
-}
-extension Swift.String : XLINKDevice.DataConvertible {
-  public static func + (lhs: Foundation.Data, rhs: Swift.String) -> Foundation.Data
-}
-extension Foundation.Data : XLINKDevice.DataConvertible {
-  public static func + (lhs: Foundation.Data, rhs: Foundation.Data) -> Foundation.Data
-}
-extension XLINKDevice.Archive {
-  final public func totalUnitCountForRemoving(_ entry: XLINKDevice.Entry) -> Swift.Int64
-  final public func totalUnitCountForReading(_ entry: XLINKDevice.Entry) -> Swift.Int64
-  final public func totalUnitCountForAddingItem(at url: Foundation.URL) -> Swift.Int64
-}
-extension Foundation.FileManager {
-  public func zipItem(at sourceURL: Foundation.URL, to destinationURL: Foundation.URL, shouldKeepParent: Swift.Bool = true, compressionMethod: XLINKDevice.CompressionMethod = .none, progress: Foundation.Progress? = nil) throws
-  public func unzipItem(at sourceURL: Foundation.URL, to destinationURL: Foundation.URL, skipCRC32: Swift.Bool = false, allowUncontainedSymlinks: Swift.Bool = false, progress: Foundation.Progress? = nil, pathEncoding: Swift.String.Encoding? = nil) throws
-}
-extension Foundation.URL {
-  public func isContained(in parentDirectoryURL: Foundation.URL) -> Swift.Bool
-}
-extension XLINKDevice.XLINKBikeComputerDevice : XLINKDevice.XLINKFirmwareUpdatable {
-  public var firmwareUpdateProgressPublisher: Combine.AnyPublisher<XLINKDevice.XLINKFirmwareUpdateProgress, Swift.Never> {
-    get
-  }
-  public func updateFirmware(firmwareURL: Foundation.URL) async throws
-  public func cancelFirmwareUpdate()
-}
 public let defaultReadChunkSize: Swift.Int
 public let defaultWriteChunkSize: Swift.Int
 public let defaultFilePermissions: Swift.UInt16
@@ -908,34 +857,73 @@ final public class Archive : Swift.Sequence {
   public typealias Element = XLINKDevice.Entry
   public typealias Iterator = Swift.AnyIterator<XLINKDevice.Entry>
 }
-@_hasMissingDesignatedInitializers public class XLINKBaseDevice {
-  public var broadcastInfo: XLINKDevice.XLINKBroadcastInfo {
+@objc public enum DFUUuidType : Swift.Int {
+  case legacyService = 0
+  case legacyControlPoint = 1
+  case legacyPacket = 2
+  case legacyVersion = 3
+  case secureService = 4
+  case secureControl = 5
+  case securePacket = 6
+  case buttonlessService = 7
+  case buttonlessCharacteristic = 8
+  case buttonlessWithoutBondSharing = 9
+  case buttonlessWithBondSharing = 10
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
     get
   }
-  public var deviceState: XLINKDevice.XLINKDeviceState {
-    get
-    set
-  }
-  final public let deviceStatePublisher: Combine.PassthroughSubject<XLINKDevice.XLINKDeviceState, Swift.Never>
-  final public let deviceInfoUpdatedPublisher: Combine.PassthroughSubject<XLINKDevice.XLINKBroadcastInfo, Swift.Never>
-  final public let fileTransferPublisher: Combine.PassthroughSubject<(Swift.String, XLINKDevice.FileTransferState), Swift.Never>
-  final public let batteryLevelPublisher: Combine.PassthroughSubject<Swift.UInt8, Swift.Never>
-  final public let batteryStatusPublisher: Combine.PassthroughSubject<XLINKDevice.BatteryStatus, Swift.Never>
-  public var batteryLevel: Swift.UInt8? {
-    get
-  }
-  public var batteryStatus: XLINKDevice.BatteryStatus? {
-    get
-  }
-  public init(deviceInfo: XLINKDevice.XLINKBroadcastInfo)
-  @discardableResult
-  public func connect() -> Swift.Bool
-  public func disconnect()
-  public func requestDeviceState() async throws
-  public func requestDeviceStorage() async throws -> (remainStorage: Swift.Int, totalStorage: Swift.Int)
-  public func syncTime() async throws
-  public func resetDevice(_: XLINKDevice.XLINKResetMode) async throws
+}
+@objc public class DFUUuid : ObjectiveC.NSObject {
+  @objc final public let uuid: CoreBluetooth.CBUUID
+  @objc final public let type: XLINKDevice.DFUUuidType
+  @objc public init(withUUID: CoreBluetooth.CBUUID, forType: XLINKDevice.DFUUuidType)
   @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class DFUUuidHelper : ObjectiveC.NSObject {
+  @objc public var legacyDFUService: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var legacyDFUControlPoint: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var legacyDFUPacket: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var legacyDFUVersion: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var secureDFUService: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var secureDFUControlPoint: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var secureDFUPacket: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var buttonlessExperimentalService: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var buttonlessExperimentalCharacteristic: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var buttonlessWithoutBonds: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc public var buttonlessWithBonds: CoreBluetooth.CBUUID {
+    get
+  }
+  @objc override dynamic public init()
+  @objc convenience public init(customUuids uuids: [XLINKDevice.DFUUuid])
+  @objc deinit
+}
+extension XLINKDevice.Archive {
+  @available(*, deprecated, message: "Please use the throwing initializer.")
+  convenience public init?(url: Foundation.URL, accessMode mode: XLINKDevice.Archive.AccessMode, preferredEncoding: Swift.String.Encoding? = nil)
+  @available(*, deprecated, message: "Please use the throwing initializer.")
+  convenience public init?(data: Foundation.Data = Data(), accessMode mode: XLINKDevice.Archive.AccessMode, preferredEncoding: Swift.String.Encoding? = nil)
 }
 @objc public enum DFUFirmwareType : Swift.UInt8 {
   case softdevice = 1
@@ -988,66 +976,83 @@ extension XLINKDevice.DFUFirmwareError : Foundation.LocalizedError {
   @objc public init(hexFile: Foundation.Data, datFile: Foundation.Data?, type: XLINKDevice.DFUFirmwareType) throws
   @objc deinit
 }
-@objc public enum LogLevel : Swift.Int {
-  case debug = 0
-  case verbose = 1
-  case info = 5
-  case application = 10
-  case warning = 15
-  case error = 20
-  public func name() -> Swift.String
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
+extension XLINKDevice.XLINKBikeComputerDevice : XLINKDevice.XLINKFirmwareUpdatable {
+  public var firmwareUpdateProgressPublisher: Combine.AnyPublisher<XLINKDevice.XLINKFirmwareUpdateProgress, Swift.Never> {
     get
   }
-}
-@objc public protocol LoggerDelegate {
-  @objc func logWith(_ level: XLINKDevice.LogLevel, message: Swift.String)
+  public func updateFirmware(firmwareURL: Foundation.URL) async throws
+  public func cancelFirmwareUpdate()
 }
 extension Foundation.FileManager {
-  @available(*, deprecated, renamed: "unzipItem(at:to:skipCRC32:progress:pathEncoding:)")
-  public func unzipItem(at sourceURL: Foundation.URL, to destinationURL: Foundation.URL, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil, preferredEncoding: Swift.String.Encoding?) throws
+  public func zipItem(at sourceURL: Foundation.URL, to destinationURL: Foundation.URL, shouldKeepParent: Swift.Bool = true, compressionMethod: XLINKDevice.CompressionMethod = .none, progress: Foundation.Progress? = nil) throws
+  public func unzipItem(at sourceURL: Foundation.URL, to destinationURL: Foundation.URL, skipCRC32: Swift.Bool = false, allowUncontainedSymlinks: Swift.Bool = false, progress: Foundation.Progress? = nil, pathEncoding: Swift.String.Encoding? = nil) throws
 }
-prefix operator ++=
-postfix operator ++=
-prefix operator --=
-postfix operator --=
+extension Foundation.URL {
+  public func isContained(in parentDirectoryURL: Foundation.URL) -> Swift.Bool
+}
+@_hasMissingDesignatedInitializers public class XLINKBaseDevice {
+  public var broadcastInfo: XLINKDevice.XLINKBroadcastInfo {
+    get
+  }
+  public var deviceState: XLINKDevice.XLINKDeviceState {
+    get
+    set
+  }
+  final public let deviceStatePublisher: Combine.PassthroughSubject<XLINKDevice.XLINKDeviceState, Swift.Never>
+  final public let deviceInfoUpdatedPublisher: Combine.PassthroughSubject<XLINKDevice.XLINKBroadcastInfo, Swift.Never>
+  final public let fileTransferPublisher: Combine.PassthroughSubject<(Swift.String, XLINKDevice.FileTransferState), Swift.Never>
+  final public let batteryLevelPublisher: Combine.PassthroughSubject<Swift.UInt8, Swift.Never>
+  final public let batteryStatusPublisher: Combine.PassthroughSubject<XLINKDevice.BatteryStatus, Swift.Never>
+  public var batteryLevel: Swift.UInt8? {
+    get
+  }
+  public var batteryStatus: XLINKDevice.BatteryStatus? {
+    get
+  }
+  public init(deviceInfo: XLINKDevice.XLINKBroadcastInfo)
+  @discardableResult
+  public func connect() -> Swift.Bool
+  public func disconnect()
+  public func requestDeviceState() async throws
+  public func requestDeviceStorage() async throws -> (remainStorage: Swift.Int, totalStorage: Swift.Int)
+  public func syncTime() async throws
+  public func resetDevice(_: XLINKDevice.XLINKResetMode) async throws
+  @objc deinit
+}
 extension XLINKDevice.Archive {
-  final public func extract(_ entry: XLINKDevice.Entry, to url: Foundation.URL, bufferSize: Swift.Int = defaultReadChunkSize, skipCRC32: Swift.Bool = false, allowUncontainedSymlinks: Swift.Bool = false, progress: Foundation.Progress? = nil) throws -> XLINKDevice.CRC32
-  final public func extract(_ entry: XLINKDevice.Entry, bufferSize: Swift.Int = defaultReadChunkSize, skipCRC32: Swift.Bool = false, progress: Foundation.Progress? = nil, consumer: (_ data: Foundation.Data) throws -> Swift.Void) throws -> XLINKDevice.CRC32
+  @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
+  final public func addEntry(with path: Swift.String, relativeTo baseURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.UInt32, progress: Foundation.Progress? = nil) throws
+  @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
+  final public func addEntry(with path: Swift.String, fileURL: Foundation.URL, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.UInt32, progress: Foundation.Progress? = nil) throws
+  @available(*, deprecated, message: "Please use `Int64` for `uncompressedSize` and provider `position`. `Int` for `bufferSize`.")
+  final public func addEntry(with path: Swift.String, type: XLINKDevice.Entry.EntryType, uncompressedSize: Swift.UInt32, modificationDate: Foundation.Date = Date(), permissions: Swift.UInt16? = nil, compressionMethod: XLINKDevice.CompressionMethod = .none, bufferSize: Swift.Int = defaultWriteChunkSize, progress: Foundation.Progress? = nil, provider: (_ position: Swift.Int, _ size: Swift.Int) throws -> Foundation.Data) throws
+  @available(*, deprecated, message: "Please use `Int` for `bufferSize`.")
+  final public func remove(_ entry: XLINKDevice.Entry, bufferSize: Swift.UInt32, progress: Foundation.Progress? = nil) throws
 }
-@_inheritsConvenienceInitializers @objc public class SecureDFUServiceInitiator : XLINKDevice.DFUServiceInitiator {
-  @objc override public func start(targetWithIdentifier uuid: Foundation.UUID) -> XLINKDevice.DFUServiceController?
-  @available(*, deprecated, message: "Use init(queue: DispatchQueue?) instead.")
-  @objc override public init(centralManager: CoreBluetooth.CBCentralManager, target: CoreBluetooth.CBPeripheral)
-  @objc override public init(queue: Dispatch.DispatchQueue? = nil, delegateQueue: Dispatch.DispatchQueue = super, progressQueue: Dispatch.DispatchQueue = super, loggerQueue: Dispatch.DispatchQueue = super, centralManagerOptions: [Swift.String : Any]? = nil)
-  @objc deinit
-}
-@objc @_inheritsConvenienceInitializers public class IntelHex2BinConverter : ObjectiveC.NSObject {
-  public static func convert(_ hex: Foundation.Data, mbrSize: Swift.UInt32 = 0) -> Foundation.Data?
-  @objc override dynamic public init()
-  @objc deinit
-}
-extension XLINKDevice.CompressionMethod : Swift.Equatable {}
-extension XLINKDevice.CompressionMethod : Swift.Hashable {}
-extension XLINKDevice.CompressionMethod : Swift.RawRepresentable {}
-extension XLINKDevice.Entry.EntryType : Swift.Equatable {}
-extension XLINKDevice.Entry.EntryType : Swift.Hashable {}
-extension XLINKDevice.Entry.EntryType : Swift.RawRepresentable {}
-extension XLINKDevice.DFUUuidType : Swift.Equatable {}
-extension XLINKDevice.DFUUuidType : Swift.Hashable {}
-extension XLINKDevice.DFUUuidType : Swift.RawRepresentable {}
-extension XLINKDevice.BikeComputerConnectionState : Swift.Equatable {}
-extension XLINKDevice.BikeComputerConnectionState : Swift.Hashable {}
-extension XLINKDevice.XLINKResetMode : Swift.Equatable {}
-extension XLINKDevice.XLINKResetMode : Swift.Hashable {}
 extension XLINKDevice.DFUError : Swift.Equatable {}
 extension XLINKDevice.DFUError : Swift.Hashable {}
 extension XLINKDevice.DFUError : Swift.RawRepresentable {}
 extension XLINKDevice.DFUState : Swift.Equatable {}
 extension XLINKDevice.DFUState : Swift.Hashable {}
 extension XLINKDevice.DFUState : Swift.RawRepresentable {}
+extension XLINKDevice.ResponseError : Swift.Equatable {}
+extension XLINKDevice.ResponseError : Swift.Hashable {}
+extension XLINKDevice.Entry.EntryType : Swift.Equatable {}
+extension XLINKDevice.Entry.EntryType : Swift.Hashable {}
+extension XLINKDevice.Entry.EntryType : Swift.RawRepresentable {}
+extension XLINKDevice.CompressionMethod : Swift.Equatable {}
+extension XLINKDevice.CompressionMethod : Swift.Hashable {}
+extension XLINKDevice.CompressionMethod : Swift.RawRepresentable {}
+extension XLINKDevice.BikeComputerConnectionState : Swift.Equatable {}
+extension XLINKDevice.BikeComputerConnectionState : Swift.Hashable {}
+extension XLINKDevice.XLINKResetMode : Swift.Equatable {}
+extension XLINKDevice.XLINKResetMode : Swift.Hashable {}
+extension XLINKDevice.LogLevel : Swift.Equatable {}
+extension XLINKDevice.LogLevel : Swift.Hashable {}
+extension XLINKDevice.LogLevel : Swift.RawRepresentable {}
+extension XLINKDevice.BatteryStatus : Swift.Equatable {}
+extension XLINKDevice.BatteryStatus : Swift.Hashable {}
+extension XLINKDevice.BatteryStatus : Swift.RawRepresentable {}
 extension XLINKDevice.XLINKBroadcastType : Swift.Equatable {}
 extension XLINKDevice.XLINKBroadcastType : Swift.Hashable {}
 extension XLINKDevice.XLINKDeviceState : Swift.Equatable {}
@@ -1055,15 +1060,10 @@ extension XLINKDevice.XLINKDeviceState : Swift.Hashable {}
 extension XLINKDevice.FileSyncState : Swift.Equatable {}
 extension XLINKDevice.FileSyncState : Swift.Hashable {}
 extension XLINKDevice.FileSyncState : Swift.RawRepresentable {}
-extension XLINKDevice.ResponseError : Swift.Equatable {}
-extension XLINKDevice.ResponseError : Swift.Hashable {}
-extension Foundation.Data.DataError : Swift.Equatable {}
-extension Foundation.Data.DataError : Swift.Hashable {}
-extension XLINKDevice.BatteryStatus : Swift.Equatable {}
-extension XLINKDevice.BatteryStatus : Swift.Hashable {}
-extension XLINKDevice.BatteryStatus : Swift.RawRepresentable {}
 extension XLINKDevice.DFUStreamHexError : Swift.Equatable {}
 extension XLINKDevice.DFUStreamHexError : Swift.Hashable {}
+extension Foundation.Data.DataError : Swift.Equatable {}
+extension Foundation.Data.DataError : Swift.Hashable {}
 extension XLINKDevice.DFUStreamZipError : Swift.Equatable {}
 extension XLINKDevice.DFUStreamZipError : Swift.Hashable {}
 extension XLINKDevice.Archive.ArchiveError : Swift.Equatable {}
@@ -1071,11 +1071,11 @@ extension XLINKDevice.Archive.ArchiveError : Swift.Hashable {}
 extension XLINKDevice.Archive.AccessMode : Swift.Equatable {}
 extension XLINKDevice.Archive.AccessMode : Swift.Hashable {}
 extension XLINKDevice.Archive.AccessMode : Swift.RawRepresentable {}
+extension XLINKDevice.DFUUuidType : Swift.Equatable {}
+extension XLINKDevice.DFUUuidType : Swift.Hashable {}
+extension XLINKDevice.DFUUuidType : Swift.RawRepresentable {}
 extension XLINKDevice.DFUFirmwareType : Swift.Equatable {}
 extension XLINKDevice.DFUFirmwareType : Swift.Hashable {}
 extension XLINKDevice.DFUFirmwareType : Swift.RawRepresentable {}
 extension XLINKDevice.DFUFirmwareError.FileType : Swift.Equatable {}
 extension XLINKDevice.DFUFirmwareError.FileType : Swift.Hashable {}
-extension XLINKDevice.LogLevel : Swift.Equatable {}
-extension XLINKDevice.LogLevel : Swift.Hashable {}
-extension XLINKDevice.LogLevel : Swift.RawRepresentable {}
