@@ -220,6 +220,26 @@ public struct SettingsModel : Swift.Codable {
   public var keytone: Swift.Bool?
   public var gps_model: Swift.Int?
   public var sport_model: Swift.Int?
+  public var lap: XLINKDevice.SettingsModel.LapModel?
+  public struct LapModel : Swift.Codable, Swift.Equatable {
+    public var mode: XLINKDevice.SettingsModel.AutoLapMode
+    public var value: Swift.Int?
+    public var lat: Swift.Int?
+    public var lon: Swift.Int?
+    public init(mode: XLINKDevice.SettingsModel.AutoLapMode = .manual, value: Swift.Int? = nil, lat: Swift.Int? = nil, lon: Swift.Int? = nil)
+    public static func == (a: XLINKDevice.SettingsModel.LapModel, b: XLINKDevice.SettingsModel.LapModel) -> Swift.Bool
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public struct AutoLapMode : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
+    public let rawValue: Swift.Int
+    public init(rawValue: Swift.Int)
+    public static let manual: XLINKDevice.SettingsModel.AutoLapMode
+    public static let location: XLINKDevice.SettingsModel.AutoLapMode
+    public static let distance: XLINKDevice.SettingsModel.AutoLapMode
+    public static let time: XLINKDevice.SettingsModel.AutoLapMode
+    public typealias RawValue = Swift.Int
+  }
   public struct Unit : Swift.RawRepresentable, Swift.Codable, Swift.Equatable {
     public init(rawValue: Swift.Int)
     public let rawValue: Swift.Int

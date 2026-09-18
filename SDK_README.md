@@ -1,4 +1,4 @@
-# XLINKDevice iOS SDK 1.2.0
+# XLINKDevice iOS SDK 1.2.1
 
 XLINKDevice 提供码表扫描、连接、配置读写、骑行记录同步、星历文件下发和固件升级。对外模块只有 `XLINKDevice`，无需集成内部协议包或另外安装 NordicDFU、ZIPFoundation。
 
@@ -140,6 +140,33 @@ final class DeviceSession {
 配置模型为 Codable；推荐读取设备配置、修改公开字段后再发送，保留设备已有字段。也可以使用符合设备格式的 JSON，经 `JSONDecoder` 解码。模型的 Swift 属性名与设备侧 JSON 键名逐字一致（`device_model`、`update_at`、`FTP` 等按原样保留），模型不声明 `CodingKeys`，线格式由属性名直接决定——自行构造 JSON 时按属性名写键即可。
 
 写操作不返回值：失败一律抛出 `XLINKDeviceError`，调用返回即表示设备已接受。读取配置的方法返回可选值，解码失败会抛错，调用方仍应处理 nil。
+
+### 计圈配置（SDK 1.2.1）
+
+`settings.lap` 对应配置协议 v2.0.2 的计圈配置。该字段为可选值：设备未返回时为 `nil`，编码时省略；不要仅为启用计圈而修改文件的 `version`。
+
+| 字段 | 类型 | 含义 |
+|---|---|---|
+| `lap.mode` | `SettingsModel.AutoLapMode` | `.manual` = 0、`.location` = 1、`.distance` = 2、`.time` = 3 |
+| `lap.value` | `Int?` | 距离模式为米，时间模式为秒；距离范围 1–100000 米，时间范围 10–86400 秒 |
+| `lap.lat` | `Int?` | 位置纬度，保留设备返回的整数表示 |
+| `lap.lon` | `Int?` | 位置经度，保留设备返回的整数表示 |
+
+`LapModel` 提供公开初始化方法，默认模式为 `.manual`，其余字段默认为 `nil`。SDK 按原值编解码，不执行坐标换算或范围裁剪；未知计圈模式可通过 `AutoLapMode(rawValue:)` 保留。
+
+```swift
+@MainActor
+func setDistanceLap(on device: XLINKBikeComputerDevice) async throws {
+    guard var file = try await device.getSettings(),
+          var settings = file.settings,
+          settings.lap != nil else { return }
+    settings.lap = SettingsModel.LapModel(mode: .distance, value: 5000)
+    file.settings = settings
+    try await device.sendSettings(file)
+}
+```
+
+示例仅修改设备已经提供的计圈配置。调用方应按设备能力选择模式；位置模式保留 `lat`、`lon` 的协议整数值。
 
 ### 任意文件与星历
 
@@ -341,9 +368,11 @@ func observeDiagnostics() -> AnyCancellable {
 
 ## 当前版本与兼容性
 
-本发行包版本与 SDK 认证版本均为 **1.2.0**。从发行压缩包取得时，随包文件的校验值以包内 `RELEASE_MANIFEST.json` 为准；从 Demo 仓库取得时以版本控制为准。
+本发行包版本与 SDK 认证版本均为 **1.2.1**。从发行压缩包取得时，随包文件的校验值以包内 `RELEASE_MANIFEST.json` 为准；从 Demo 仓库取得时以版本控制为准。
 
-本次交付包含两类变更。行为上：最低部署版本提升到 iOS 17.0；进入 DFU 模式后等待设备重启期间若升级被取消，不再错误清除重启预期，避免后续升级直接失败。接口上：公开面做了一次性收口，事件流改为只读、部分方法签名与属性名变更、若干不可达类型移除——**既有接入代码需要按下节迁移**。
+1.2.1 新增 `SettingsModel.lap`、公开的 `LapModel` 与 `AutoLapMode`，支持计圈配置的读取、构造、修改和回写。兼容 1.2.0 的已有接口；旧文件缺少 `lap` 时仍可解析，回写时不补出该字段。
+
+1.2.0 的变更包括：最低部署版本提升到 iOS 17.0；进入 DFU 模式后等待设备重启期间若升级被取消，不再错误清除重启预期，避免后续升级直接失败。接口上：公开面做了一次性收口，事件流改为只读、部分方法签名与属性名变更、若干不可达类型移除——**既有接入代码需要按下节迁移**。
 
 旧文档中“仅允许已登记产品”“优化入口采用不同取数协议”“支持远程固件 URL”“重置接口修复设备通道”等说法不适用于当前实现。
 

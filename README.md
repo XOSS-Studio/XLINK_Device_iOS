@@ -1,6 +1,6 @@
 # XLINK 对外演示 Demo
 
-本目录是 XLINKDevice iOS SDK 的演示工程，完整覆盖 SDK 的公开能力：授权初始化、扫描连接、设备命令、文件读写与同步、固件升级、诊断事件。工程直接链接随目录提供的 **Release XLINKDevice.xcframework 1.2.0**，不依赖任何 SDK 源码工程。
+本目录是 XLINKDevice iOS SDK 的演示工程，完整覆盖 SDK 的公开能力：授权初始化、扫描连接、设备命令、文件读写与同步、固件升级、诊断事件。工程直接链接随目录提供的 **Release XLINKDevice.xcframework 1.2.1**，不依赖任何 SDK 源码工程。
 
 ## 打开与使用
 
