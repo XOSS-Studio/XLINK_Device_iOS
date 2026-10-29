@@ -1,4 +1,4 @@
-# XLINKDevice iOS SDK 1.2.1
+# XLINKDevice iOS SDK 1.2.2
 
 XLINKDevice 提供码表扫描、连接、配置读写、骑行记录同步、星历文件下发和固件升级。对外模块只有 `XLINKDevice`，无需集成内部协议包或另外安装 NordicDFU、ZIPFoundation。
 
@@ -9,7 +9,7 @@ XLINKDevice 提供码表扫描、连接、配置读写、骑行记录同步、�
 - `THIRD_PARTY_LICENSES.md`：内置第三方代码的许可证。
 - `RELEASE_MANIFEST.json`：构建工具链、构建配置、公开接口清单、二进制运行时依赖与随包文件校验值。**仅随发行压缩包提供**；若你是从 Demo 仓库取得本 SDK，文件完整性由该仓库的版本控制保证，不再附带这份清单。
 
-最低部署版本为 **iOS 17.0**。自 1.2.0 起为破坏性变更，低于 17.0 的宿主无法链接。本次使用 Xcode 26.6 构建；接入时应使用能够读取发行包 Swift 接口的兼容 Xcode。Simulator 二进制供编译与界面开发使用，蓝牙协议联调仍需真机。
+最低部署版本为 **iOS 17.0**。自 1.2.0 起为破坏性变更，低于 17.0 的宿主无法链接。本次使用 Xcode 27.2（Swift 6.4.2）构建，公开接口已用 Xcode 27.1 与 27.2 在 Swift 5、Swift 6 语言模式下验证可导入；更早的 Xcode 未验证。接入时应使用能够读取发行包 Swift 接口的 Xcode，接口使用 Swift 6.4 的模块选择符写法（`Swift::Codable` 这类）。Simulator 二进制供编译与界面开发使用，蓝牙协议联调仍需真机。
 
 手动集成：将整个 `XLINKDevice.xcframework` 加到 App target 的 Frameworks, Libraries, and Embedded Content，动态 framework 选择 **Embed & Sign**。也可以将解压后的发行包作为本地 Swift Package 添加，并选择 `XLINKDevice` product。两种方式选择一种，避免重复链接。
 
@@ -134,6 +134,7 @@ final class DeviceSession {
 | `getSettings() async throws -> DeviceSetting?` | `sendSettings(_:) async throws` | `settings.json` |
 | `getGearProfile() async throws -> GearSetting` | `sendGearProfile(_:) async throws` | `gear_profile.json` |
 | `getPanels() async throws -> PanelSetting` | `sendPanels(_:) async throws` | `panels.json` |
+| `getMapping() async throws -> MappingSetting` | `sendMapping(_:) async throws` | `mapping.json`，自定义按键映射 |
 | `getWorkouts() async throws -> [WorkoutStruct]` | — | `workouts.json`；空数组表示没有记录 |
 | `syncWorkout(_:) async throws -> Data` | `deleteWorkout(_:) async throws` | 使用列表项的 `formatName`，即对应 FIT 文件名 |
 
@@ -167,6 +168,22 @@ func setDistanceLap(on device: XLINKBikeComputerDevice) async throws {
 ```
 
 示例仅修改设备已经提供的计圈配置。调用方应按设备能力选择模式；位置模式保留 `lat`、`lon` 的协议整数值。
+
+### 按键映射配置（SDK 1.2.2）
+
+`MappingSetting` 对应设备端 `mapping.json`，所有字段均为可选值，缺失的键解码为 `nil`、编码时省略。
+
+| 字段 | 类型 | 含义 |
+|---|---|---|
+| `version` / `device_model` / `sn` / `update_at` | `String?` / `String?` / `String?` / `Int?` | 文件版本、设备型号、序列号、更新时间戳 |
+| `count` | `Int?` | 映射数量 |
+| `mappings` | `[CustomMapping]?` | 映射列表 |
+| `mappings[].title` | `String?` | 映射名称 |
+| `mappings[].event_count` / `event` | `Int?` / `[Int]?` | 事件数量与事件列表 |
+| `mappings[].function_count` / `function` | `Int?` / `[Int]?` | 功能数量与功能列表 |
+| `mappings[].on` | `Bool?` | 是否启用 |
+
+事件与功能的取值由设备协议定义。SDK 按原值编解码，不校验数量字段与列表长度是否一致，也不会自动更新 `update_at`；推荐先 `getMapping()` 读取，修改 `CustomMapping` 的公开字段后再 `sendMapping(_:)`。`CustomMapping` 没有逐字段的公开构造方法；需要新增映射项时，可用 `JSONDecoder` 从 `{}` 解码出空条目，再逐项赋值。
 
 ### 任意文件与星历
 
@@ -368,7 +385,9 @@ func observeDiagnostics() -> AnyCancellable {
 
 ## 当前版本与兼容性
 
-本发行包版本与 SDK 认证版本均为 **1.2.1**。从发行压缩包取得时，随包文件的校验值以包内 `RELEASE_MANIFEST.json` 为准；从 Demo 仓库取得时以版本控制为准。
+本发行包版本与 SDK 认证版本均为 **1.2.2**。从发行压缩包取得时，随包文件的校验值以包内 `RELEASE_MANIFEST.json` 为准；从 Demo 仓库取得时以版本控制为准。
+
+1.2.2 新增按键映射配置：`getMapping()` / `sendMapping(_:)` 读写设备端 `mapping.json`，以及公开的 `MappingSetting` 与 `CustomMapping`。仅新增接口，兼容 1.2.1 的已有接口。
 
 1.2.1 新增 `SettingsModel.lap`、公开的 `LapModel` 与 `AutoLapMode`，支持计圈配置的读取、构造、修改和回写。兼容 1.2.0 的已有接口；旧文件缺少 `lap` 时仍可解析，回写时不补出该字段。
 

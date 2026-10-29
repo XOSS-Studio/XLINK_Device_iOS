@@ -1,10 +1,10 @@
 # XLINK 对外演示 Demo
 
-本目录是 XLINKDevice iOS SDK 的演示工程，完整覆盖 SDK 的公开能力：授权初始化、扫描连接、设备命令、文件读写与同步、固件升级、诊断事件。工程直接链接随目录提供的 **Release XLINKDevice.xcframework 1.2.1**，不依赖任何 SDK 源码工程。
+本目录是 XLINKDevice iOS SDK 的演示工程，完整覆盖 SDK 的公开能力：授权初始化、扫描连接、设备命令、文件读写与同步、固件升级、诊断事件。工程直接链接随目录提供的 **Release XLINKDevice.xcframework 1.2.2**，不依赖任何 SDK 源码工程。
 
 ## 打开与使用
 
-1. 使用 Xcode 26.6 或兼容版本打开 `XLINKDeviceExample.xcodeproj`，选择 `XLINKDeviceExample` scheme。
+1. 使用 Xcode 27.1 或更新版本打开 `XLINKDeviceExample.xcodeproj`（SDK 接口由 Xcode 27.2 生成，已验证 27.1 与 27.2 可导入，更早版本未验证），选择 `XLINKDeviceExample` scheme。
 2. 最低部署版本为 iOS 17.0。真机运行前，在 Signing & Capabilities 选择自己的 Team；工程保留 `com.imxingzhe.xlink` Bundle Identifier，修改时应核对 API Key 的授权信息。
 3. 在 Demo 的「SDK」页填写自己的 API Key 并初始化。源码不包含固定 API Key；Debug 可从 `XLINK_API_KEY` 环境变量读取初始值。
 4. 蓝牙开启后，到「设备」页扫描、连接，再进入命令、文件、固件与诊断界面。

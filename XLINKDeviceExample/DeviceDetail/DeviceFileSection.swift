@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import XLINKDevice
 
-/// 文件段：四类配置的读取与回写、轨迹同步与删除、星历文件下发、传输控制。
+/// 文件段：五类配置的读取与回写、轨迹同步与删除、星历文件下发、传输控制。
 struct DeviceFileSection: View {
     let device: XLINKBikeComputerDevice
     @ObservedObject var viewModel: DeviceDetailViewModel
@@ -97,6 +97,15 @@ struct DeviceFileSection: View {
                 transferProgress: progress(for: state.getPanelsResult),
                 action: { state.getPanels(device: device, viewModel: viewModel) }
             )
+            DemoActionCard(
+                title: "按键映射",
+                signature: "try await device.getMapping()",
+                isEnabled: availability.isEnabled,
+                disabledReason: availability.reason,
+                result: state.getMappingResult,
+                transferProgress: progress(for: state.getMappingResult),
+                action: { state.getMapping(device: device, viewModel: viewModel) }
+            )
         }
     }
 
@@ -143,6 +152,16 @@ struct DeviceFileSection: View {
                 result: state.sendPanelsResult,
                 transferProgress: progress(for: state.sendPanelsResult),
                 action: { state.sendPanels(device: device, viewModel: viewModel) }
+            )
+            DemoActionCard(
+                title: "回写按键映射",
+                signature: "try await device.sendMapping(_:)",
+                note: "需要先执行上面的「按键映射」读取。",
+                isEnabled: availability.isEnabled && state.mapping != nil,
+                disabledReason: state.mapping == nil ? "请先读取按键映射" : availability.reason,
+                result: state.sendMappingResult,
+                transferProgress: progress(for: state.sendMappingResult),
+                action: { state.sendMapping(device: device, viewModel: viewModel) }
             )
         }
     }
@@ -275,11 +294,13 @@ final class DeviceFileState: ObservableObject {
     @Published var getSettingsResult = DemoActionResult.idle
     @Published var getGearResult = DemoActionResult.idle
     @Published var getPanelsResult = DemoActionResult.idle
+    @Published var getMappingResult = DemoActionResult.idle
 
     @Published var sendUserProfileResult = DemoActionResult.idle
     @Published var sendSettingsResult = DemoActionResult.idle
     @Published var sendGearResult = DemoActionResult.idle
     @Published var sendPanelsResult = DemoActionResult.idle
+    @Published var sendMappingResult = DemoActionResult.idle
 
     @Published var workoutsResult = DemoActionResult.idle
     @Published var syncWorkoutResult = DemoActionResult.idle
@@ -297,6 +318,7 @@ final class DeviceFileState: ObservableObject {
     @Published private(set) var settings: DeviceSetting?
     @Published private(set) var gearProfile: GearSetting?
     @Published private(set) var panels: PanelSetting?
+    @Published private(set) var mapping: MappingSetting?
 
     // MARK: - 读取
 
@@ -358,6 +380,20 @@ final class DeviceFileState: ObservableObject {
         }
     }
 
+    func getMapping(device: XLINKBikeComputerDevice, viewModel: DeviceDetailViewModel) {
+        perform(viewModel, "读取按键映射") {
+            let value = await DemoActionRunner.run(
+                self,
+                \.getMappingResult,
+                operation: { try await device.getMapping() },
+                summarize: { mapping in
+                    ("已读取 \(mapping.mappings?.count ?? 0) 条按键映射", DemoJSON.string(from: mapping))
+                }
+            )
+            self.mapping = value
+        }
+    }
+
     // MARK: - 回写
 
     func sendUserProfile(device: XLINKBikeComputerDevice, viewModel: DeviceDetailViewModel) {
@@ -404,6 +440,18 @@ final class DeviceFileState: ObservableObject {
                 \.sendPanelsResult,
                 successSummary: "设备已接受",
                 operation: { try await device.sendPanels(panels) }
+            )
+        }
+    }
+
+    func sendMapping(device: XLINKBikeComputerDevice, viewModel: DeviceDetailViewModel) {
+        guard let mapping else { return }
+        perform(viewModel, "回写按键映射") {
+            await DemoActionRunner.run(
+                self,
+                \.sendMappingResult,
+                successSummary: "设备已接受",
+                operation: { try await device.sendMapping(mapping) }
             )
         }
     }
